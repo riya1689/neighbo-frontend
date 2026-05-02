@@ -18,7 +18,7 @@ export default function SidebarLeft() {
           </li>
           <li className="flex items-center gap-3 p-3 hover:bg-primary-hover hover:text-primary text-dark-text/70 rounded-xl cursor-pointer transition group">
             <Users size={20} className="text-dark-text/40 group-hover:text-primary transition" />
-            <span>Neighbos (Friends)</span>
+            <span>Neighbos</span>
           </li>
         </ul>
       </div>

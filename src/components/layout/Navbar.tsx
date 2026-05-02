@@ -1,4 +1,5 @@
 // src/components/layout/Navbar.tsx
+import { BellRing } from "lucide-react";
 export default function Navbar() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-white border-b border-softGray shadow-sm h-16">
@@ -25,7 +26,9 @@ export default function Navbar() {
 
         {/* Right: Actions (Guest State Example) */}
         <div className="flex items-center gap-4">
-          <button className="p-2 text-darkText hover:bg-primary-hover rounded-full">🔔</button>
+          <button className="p-2 text-darkText hover:bg-primary-hover rounded-full">
+            <BellRing size={20}/>
+            </button>
           <button className="font-poppins text-sm px-4 py-2 text-primary hover:bg-primary-hover rounded-lg font-semibold">Login</button>
           <button className="font-poppins text-sm px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition shadow-md">Register</button>
         </div>
