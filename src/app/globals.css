@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* --- Brand Colors --- */
+  --color-primary: #6C4DFF;
+  --color-primary-dark: #8B5CF6;
+  --color-primary-hover: #EEE8FF;
+  
+  --color-background: #F5F7FB;
+  --color-soft-gray: #E5E7EB;
+  --color-dark-text: #1F2937;
+  
+  --color-accent-red: #EF4444;
+  --color-accent-green: #22C55E;
+
+  /* --- Font Families --- */
+  --font-poppins: var(--font-poppins);
+  --font-inter: var(--font-inter);
+
+  /* Custom Border Radius for the "Modern UI" requirement */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base styles to apply the theme defaults */
+@layer base {
+  body {
+    @apply bg-background text-dark-text font-inter;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
