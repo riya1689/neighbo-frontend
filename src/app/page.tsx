@@ -1,6 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import SidebarLeft from "@/components/layout/SidebarLeft";
-//import SidebarRight from "@/components/layout/SidebarRight";
+import SidebarRight from "@/components/layout/SidebarRight";
 import Hero from "@/components/home/Hero";
 import CreatePost from "@/components/home/CreatePost";
 
@@ -29,9 +29,9 @@ export default function HomePage() {
           </section>
 
           {/* --- RIGHT SIDEBAR (3 cols) --- */}
-          {/* <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden lg:block lg:col-span-3">
             <SidebarRight />
-          </aside> */}
+          </aside>
 
         </div>
       </main>
