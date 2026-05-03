@@ -65,10 +65,10 @@ export default function AdminLayout({
       {/* Sidebar */}
       <aside className="w-64 bg-[#0F172A] text-white flex flex-col fixed h-full z-10">
         <div className="p-6 flex items-center gap-3 border-b border-slate-700/50">
-          <div className="bg-orange-500 p-2 rounded-lg">
+          <div className="bg-primary p-2 rounded-lg">
             <ShieldCheck size={24} className="text-white" />
           </div>
-          <span className="font-poppins font-bold text-xl tracking-tight">Admin Panel</span>
+          <span className="font-poppins font-bold text-xl tracking-tight text-white">Admin Panel</span>
         </div>
 
         <nav className="flex-1 mt-6 px-3 space-y-1">
@@ -80,11 +80,11 @@ export default function AdminLayout({
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                   isActive 
-                    ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" 
+                    ? "bg-primary text-white shadow-lg shadow-primary/30" 
                     : "text-slate-400 hover:text-white hover:bg-slate-800"
                 }`}
               >
-                <span className={`${isActive ? "text-white" : "text-slate-500 group-hover:text-orange-400"} transition-colors`}>
+                <span className={`${isActive ? "text-white" : "text-slate-500 group-hover:text-primary-dark"} transition-colors`}>
                   {item.icon}
                 </span>
                 <span className="font-medium text-sm">{item.name}</span>
@@ -122,7 +122,7 @@ export default function AdminLayout({
               <p className="text-xs text-slate-500">System Administrator</p>
             </div>
             <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
-              <ShieldCheck size={20} className="text-orange-500" />
+              <ShieldCheck size={20} className="text-primary" />
             </div>
           </div>
         </header>
