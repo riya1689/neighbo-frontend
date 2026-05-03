@@ -25,7 +25,11 @@ export default function NeighborhoodManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setNeighborhoods(data);
+      if (Array.isArray(data)) {
+        setNeighborhoods(data);
+      } else {
+        setNeighborhoods([]);
+      }
     } catch (e) {
       toast.error("Failed to fetch neighborhoods");
     } finally {
@@ -91,8 +95,8 @@ export default function NeighborhoodManagement() {
         <div className="lg:col-span-4">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-24">
             <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Plus size={20} className="text-blue-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Plus size={20} className="text-primary" />
               </div>
               <h3 className="font-bold text-slate-800">Create District</h3>
             </div>
@@ -104,7 +108,7 @@ export default function NeighborhoodManagement() {
                   placeholder="e.g., Dhanmondi, Banani" 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all"
                   required
                 />
               </div>
@@ -114,12 +118,12 @@ export default function NeighborhoodManagement() {
                   placeholder="Brief overview of the area..." 
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-blue-500/20 focus:border-blue-500 outline-none transition-all min-h-[100px]"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all min-h-[100px]"
                 />
               </div>
               <button 
                 type="submit"
-                className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/25"
+                className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/25"
               >
                 Add District
               </button>
@@ -130,7 +134,7 @@ export default function NeighborhoodManagement() {
         <div className="lg:col-span-8">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm min-h-[400px]">
             <div className="flex items-center gap-2 mb-6">
-              <MapIcon size={20} className="text-blue-600" />
+              <MapIcon size={20} className="text-primary" />
               <h3 className="font-bold text-slate-800">Active Districts ({neighborhoods.length})</h3>
             </div>
 
@@ -141,10 +145,10 @@ export default function NeighborhoodManagement() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {neighborhoods.map((n) => (
-                  <div key={n.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl group hover:border-blue-200 transition-all relative">
+                  <div key={n.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl group hover:border-primary/30 transition-all relative">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Navigation size={14} className="text-blue-500" />
+                        <Navigation size={14} className="text-primary" />
                         <p className="font-bold text-slate-800">{n.name}</p>
                       </div>
                       <button 
@@ -157,7 +161,7 @@ export default function NeighborhoodManagement() {
                     <p className="text-xs text-slate-500 line-clamp-2 mb-3 h-8">{n.description || "No description provided."}</p>
                     <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{n._count.users} members</span>
-                      <span className="px-2 py-0.5 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-blue-600">Active</span>
+                      <span className="px-2 py-0.5 bg-white border border-slate-200 rounded-full text-[10px] font-bold text-primary">Active</span>
                     </div>
                   </div>
                 ))}
