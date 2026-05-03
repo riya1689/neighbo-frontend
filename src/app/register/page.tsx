@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface Neighborhood {
   id: string;
@@ -19,10 +20,12 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
   useEffect(() => {
     const fetchNeighborhoods = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/neighborhoods");
+        const response = await fetch(`${apiUrl}/neighborhoods`);
         const data = await response.json();
         if (response.ok) {
           setNeighborhoods(data);
@@ -32,7 +35,7 @@ export default function RegisterPage() {
       }
     };
     fetchNeighborhoods();
-  }, []);
+  }, [apiUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,12 +44,13 @@ export default function RegisterPage() {
 
     if (!neighborhoodId) {
       setError("Please select a neighborhood");
+      toast.error("Please select a neighborhood");
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${apiUrl}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,9 +68,14 @@ export default function RegisterPage() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
 
-      router.push("/");
+      toast.success("Welcome to the neighborhood!");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
     } catch (err: any) {
       setError(err.message);
+      toast.error(err.message || "Registration failed");
     } finally {
       setLoading(false);
     }
