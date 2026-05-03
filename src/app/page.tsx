@@ -3,6 +3,7 @@ import SidebarLeft from "@/components/layout/SidebarLeft";
 import SidebarRight from "@/components/layout/SidebarRight";
 import Hero from "@/components/home/Hero";
 import CreatePost from "@/components/home/CreatePost";
+import PostFeed from "@/components/home/PostFeed";
 
 export default function HomePage() {
   return (
@@ -22,10 +23,7 @@ export default function HomePage() {
           <section className="col-span-1 lg:col-span-6 space-y-6">
             <Hero />
             <CreatePost />
-            {/* Feed items will go here later */}
-            <div className="p-10 text-center border-2 border-dashed border-softGray rounded-xl">
-              Main Feed Content (Coming Soon)
-            </div>
+            <PostFeed />
           </section>
 
           {/* --- RIGHT SIDEBAR (3 cols) --- */}
