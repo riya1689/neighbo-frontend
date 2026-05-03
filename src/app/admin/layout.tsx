@@ -60,77 +60,92 @@ export default function AdminLayout({
     { name: "Payment Overview", icon: <History size={20} />, href: "/admin/payments" },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/login");
+    toast.success("Logged out from Admin");
+  };
+
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#0F172A] text-white flex flex-col fixed h-full z-10">
-        <div className="p-6 flex items-center gap-3 border-b border-slate-700/50">
-          <div className="bg-primary p-2 rounded-lg">
-            <ShieldCheck size={24} className="text-white" />
-          </div>
-          <span className="font-poppins font-bold text-xl tracking-tight text-white">Admin Panel</span>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Top Navbar */}
+      <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 fixed top-0 w-full z-20 shadow-xs">
+        <div className="flex-1">
+          {/* Placeholder for left spacing if needed */}
+        </div>
+        
+        <div className="flex-1 flex justify-center">
+          <Link href="/admin" className="text-2xl font-bold text-primary font-poppins tracking-tight">
+            Neighbo
+          </Link>
         </div>
 
-        <nav className="flex-1 mt-6 px-3 space-y-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link 
-                key={item.name}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                  isActive 
-                    ? "bg-primary text-white shadow-lg shadow-primary/30" 
-                    : "text-slate-400 hover:text-white hover:bg-slate-800"
-                }`}
-              >
-                <span className={`${isActive ? "text-white" : "text-slate-500 group-hover:text-primary-dark"} transition-colors`}>
-                  {item.icon}
-                </span>
-                <span className="font-medium text-sm">{item.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="p-4 border-t border-slate-700/50">
+        <div className="flex-1 flex justify-end items-center gap-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full">
+            <LayoutDashboard size={16} className="text-slate-400" />
+            <span className="text-sm font-bold text-slate-700">Hi, Admin</span>
+          </div>
           <button 
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              router.push("/login");
-              toast.success("Logged out from Admin");
-            }}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+            onClick={handleLogout}
+            className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-all"
+            title="Logout"
           >
-            <LogOut size={20} className="text-slate-500" />
-            <span className="font-medium text-sm">Logout</span>
+            <LogOut size={20} />
           </button>
         </div>
-      </aside>
+      </header>
 
-      {/* Main Content */}
-      <main className="flex-1 ml-64 p-8">
-        <header className="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-800 font-poppins">Neighbo Platform</h2>
-            <p className="text-slate-500 text-sm">Manage your community and platform health.</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-bold text-slate-800">Hi, Admin</p>
-              <p className="text-xs text-slate-500">System Administrator</p>
+      <div className="flex pt-16">
+        {/* Sidebar */}
+        <aside className="w-64 bg-[#0F172A] text-white flex flex-col fixed h-[calc(100vh-64px)] z-10">
+          <div className="p-6 flex items-center gap-3 border-b border-slate-700/50">
+            <div className="bg-primary p-2 rounded-lg">
+              <ShieldCheck size={24} className="text-white" />
             </div>
-            <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
-              <ShieldCheck size={20} className="text-primary" />
-            </div>
+            <span className="font-poppins font-bold text-xl tracking-tight text-white">Admin Panel</span>
           </div>
-        </header>
 
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {children}
-        </div>
-      </main>
+          <nav className="flex-1 mt-6 px-3 space-y-1">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link 
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                    isActive 
+                      ? "bg-primary text-white shadow-lg shadow-primary/30" 
+                      : "text-slate-400 hover:text-white hover:bg-slate-800"
+                  }`}
+                >
+                  <span className={`${isActive ? "text-white" : "text-slate-500 group-hover:text-primary-dark"} transition-colors`}>
+                    {item.icon}
+                  </span>
+                  <span className="font-medium text-sm">{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="p-4 border-t border-slate-700/50">
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+            >
+              <LogOut size={20} className="text-slate-500" />
+              <span className="font-medium text-sm">Logout</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 ml-64 p-8">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
