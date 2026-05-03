@@ -29,7 +29,12 @@ export default function UserManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setUsers(data);
+      if (Array.isArray(data)) {
+        setUsers(data);
+      } else {
+        setUsers([]);
+        console.error("Expected array but got:", data);
+      }
     } catch (e) {
       toast.error("Failed to fetch users");
     } finally {
@@ -81,7 +86,7 @@ export default function UserManagement() {
             placeholder="Search name or email..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 ring-orange-500/20 focus:border-orange-500 outline-none w-full md:w-80 shadow-sm transition-all"
+            className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none w-full md:w-80 shadow-sm transition-all"
           />
         </div>
       </div>
