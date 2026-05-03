@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,8 +17,10 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
+      const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,9 +38,14 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
 
-      router.push("/");
+      toast.success("Welcome back to Neighbo!");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
     } catch (err: any) {
       setError(err.message);
+      toast.error(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
