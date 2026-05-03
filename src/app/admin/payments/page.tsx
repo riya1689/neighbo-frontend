@@ -28,7 +28,11 @@ export default function PaymentOverview() {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
-        setPayments(data);
+        if (Array.isArray(data)) {
+          setPayments(data);
+        } else {
+          setPayments([]);
+        }
       } catch (e) {
         toast.error("Failed to fetch payments");
       } finally {
@@ -106,7 +110,7 @@ export default function PaymentOverview() {
                     </td>
                     <td className="px-6 py-4">
                       {p.invoice ? (
-                        <button className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-bold text-xs group transition-all">
+                        <button className="flex items-center gap-2 text-primary hover:text-primary-dark font-bold text-xs group transition-all">
                           <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
                           {p.invoice.invoiceNumber}
                         </button>
