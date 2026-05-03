@@ -31,7 +31,11 @@ export default function PlanManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setPlans(data);
+      if (Array.isArray(data)) {
+        setPlans(data);
+      } else {
+        setPlans([]);
+      }
     } catch (e) {
       toast.error("Failed to fetch plans");
     } finally {
@@ -95,8 +99,8 @@ export default function PlanManagement() {
         <div className="lg:col-span-4">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-24">
             <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Plus size={20} className="text-purple-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Plus size={20} className="text-primary" />
               </div>
               <h3 className="font-bold text-slate-800">Create New Plan</h3>
             </div>
@@ -108,7 +112,7 @@ export default function PlanManagement() {
                   placeholder="e.g., Gold Member" 
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all"
                   required
                 />
               </div>
@@ -120,7 +124,7 @@ export default function PlanManagement() {
                     placeholder="999" 
                     value={formData.price}
                     onChange={(e) => setFormData({...formData, price: e.target.value})}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all"
                     required
                   />
                 </div>
@@ -131,7 +135,7 @@ export default function PlanManagement() {
                     placeholder="90" 
                     value={formData.duration}
                     onChange={(e) => setFormData({...formData, duration: e.target.value})}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-purple-500/20 focus:border-purple-500 outline-none transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all"
                     required
                   />
                 </div>
@@ -142,13 +146,13 @@ export default function PlanManagement() {
                   placeholder="What's included in this plan?" 
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-purple-500/20 focus:border-purple-500 outline-none transition-all min-h-[80px]"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all min-h-[80px]"
                   required
                 />
               </div>
               <button 
                 type="submit"
-                className="w-full py-3 bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 transition-all shadow-lg shadow-purple-500/25"
+                className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/25"
               >
                 Create Plan
               </button>
@@ -159,7 +163,7 @@ export default function PlanManagement() {
         <div className="lg:col-span-8">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm min-h-[400px]">
             <div className="flex items-center gap-2 mb-6">
-              <CreditCard size={20} className="text-purple-600" />
+              <CreditCard size={20} className="text-primary" />
               <h3 className="font-bold text-slate-800">Current Plans ({plans.length})</h3>
             </div>
 
@@ -179,7 +183,7 @@ export default function PlanManagement() {
                         <Trash2 size={18} />
                       </button>
                     </div>
-                    <div className="flex items-center gap-2 text-purple-600 font-bold text-xs uppercase tracking-widest mb-2">
+                    <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-2">
                       <Check size={14} /> Premium Tier
                     </div>
                     <h4 className="text-xl font-bold text-slate-800 mb-1">{plan.name}</h4>
