@@ -9,7 +9,8 @@ import {
   Map as MapIcon, 
   TrendingUp, 
   Zap, 
-  ArrowRight 
+  ArrowRight,
+  History 
 } from "lucide-react";
 import Link from "next/link";
 
@@ -50,7 +51,7 @@ export default function AdminOverview() {
   const cards = [
     { 
       name: "TOTAL REVENUE", 
-      value: `৳ ${stats?.totalRevenue.toLocaleString()}`, 
+      value: `৳ ${(stats?.totalRevenue ?? 0).toLocaleString()}`, 
       icon: <DollarSign className="text-green-600" />, 
       bgColor: "bg-green-100",
       textColor: "text-green-600"
@@ -72,9 +73,9 @@ export default function AdminOverview() {
     { 
       name: "ACTIVE CATEGORIES", 
       value: stats?.totalCategories, 
-      icon: <Layers className="text-orange-600" />, 
-      bgColor: "bg-orange-100",
-      textColor: "text-orange-600"
+      icon: <Layers className="text-primary" />, 
+      bgColor: "bg-primary/10",
+      textColor: "text-primary"
     },
   ];
 
@@ -96,19 +97,19 @@ export default function AdminOverview() {
 
       <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-3 mb-8">
-          <Zap className="text-orange-500" fill="currentColor" />
+          <Zap className="text-primary" fill="currentColor" />
           <h3 className="text-xl font-bold text-slate-800 font-poppins">Quick Actions</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Link href="/admin/users" className="group">
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-orange-200 hover:bg-orange-50 transition-all cursor-pointer">
+            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 hover:border-primary-dark/30 hover:bg-primary/5 transition-all cursor-pointer">
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform">
-                <Users size={24} className="text-slate-400 group-hover:text-orange-500" />
+                <Users size={24} className="text-slate-400 group-hover:text-primary" />
               </div>
               <h4 className="font-bold text-slate-800 mb-2">Manage Users</h4>
               <p className="text-sm text-slate-500 mb-4">Suspend or activate customer accounts and manage permissions.</p>
-              <div className="flex items-center gap-2 text-sm font-bold text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-2 text-sm font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                 Configure Users <ArrowRight size={16} />
               </div>
             </div>
