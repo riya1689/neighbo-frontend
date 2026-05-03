@@ -23,7 +23,11 @@ export default function CategoryManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setCategories(data);
+      if (Array.isArray(data)) {
+        setCategories(data);
+      } else {
+        setCategories([]);
+      }
     } catch (e) {
       toast.error("Failed to fetch categories");
     } finally {
@@ -89,8 +93,8 @@ export default function CategoryManagement() {
         <div className="lg:col-span-4">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-24">
             <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Plus size={20} className="text-orange-600" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Plus size={20} className="text-primary" />
               </div>
               <h3 className="font-bold text-slate-800">Create Category</h3>
             </div>
@@ -102,13 +106,13 @@ export default function CategoryManagement() {
                   placeholder="e.g., Services, Marketplace" 
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-orange-500/20 focus:border-orange-500 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all"
                   required
                 />
               </div>
               <button 
                 type="submit"
-                className="w-full py-3 bg-orange-500 text-white font-bold rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/25"
+                className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/25"
               >
                 Add Category
               </button>
@@ -121,7 +125,7 @@ export default function CategoryManagement() {
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm min-h-[400px]">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
-                <Layers size={20} className="text-purple-600" />
+                <Layers size={20} className="text-primary" />
                 <h3 className="font-bold text-slate-800">Active Categories ({categories.length})</h3>
               </div>
             </div>
@@ -133,10 +137,10 @@ export default function CategoryManagement() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {categories.map((cat) => (
-                  <div key={cat.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl group hover:border-orange-200 transition-all">
+                  <div key={cat.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl group hover:border-primary/30 transition-all">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-white rounded-lg shadow-sm">
-                        <Tag size={16} className="text-slate-400 group-hover:text-orange-500" />
+                        <Tag size={16} className="text-slate-400 group-hover:text-primary" />
                       </div>
                       <div>
                         <p className="font-bold text-slate-800">{cat.name}</p>
