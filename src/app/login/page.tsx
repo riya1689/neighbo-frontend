@@ -41,7 +41,11 @@ export default function LoginPage() {
       toast.success("Welcome back to Neighbo!");
 
       setTimeout(() => {
-        router.push("/");
+        if (data.role === "ADMIN") {
+          router.push("/admin");
+        } else {
+          router.push("/");
+        }
       }, 1500);
     } catch (err: any) {
       setError(err.message);
