@@ -1,25 +1,111 @@
 "use client";
 
-import { BellRing, LogOut, User as UserIcon } from "lucide-react";
+import { BellRing, LogOut, User as UserIcon, Search as SearchIcon, CheckCheck } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
+interface Notification {
+  id: string;
+  message: string;
+  type: string;
+  link: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
 export default function Navbar() {
   const [user, setUser] = useState<any>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+        fetchUnreadCount();
       } catch (e) {
         localStorage.removeItem("user");
       }
     }
+
+    // Close dropdown on click outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const res = await fetch(`${apiUrl}/notifications/unread-count`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setUnreadCount(data.count || 0);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const res = await fetch(`${apiUrl}/notifications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setNotifications(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleToggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    if (!showNotifications) {
+      fetchNotifications();
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      await fetch(`${apiUrl}/notifications/read-all`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUnreadCount(0);
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      toast.success("All caught up!");
+    } catch (e) {
+      toast.error("Failed to update notifications");
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -40,12 +126,17 @@ export default function Navbar() {
 
         {/* Middle: Search & Links */}
         <div className="hidden md:flex items-center gap-6 flex-1 max-w-md mx-8">
-          <input 
-            type="text" 
-            placeholder="Search for people, groups..." 
-            className="w-full bg-background border-none rounded-full px-4 py-2 focus:ring-2 ring-primary/20 outline-none"
-          />
-          <div className="flex gap-4 font-poppins font-medium text-sm">
+          <form onSubmit={handleSearch} className="relative w-full">
+            <input 
+              type="text" 
+              placeholder="Search by category, area, or name..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-background border border-softGray rounded-full px-10 py-2 focus:ring-2 ring-primary/20 outline-none transition-all"
+            />
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-darkText/40" size={18} />
+          </form>
+          <div className="flex gap-4 font-poppins font-medium text-sm whitespace-nowrap">
             <Link href="/" className="text-primary border-b-2 border-primary">Home</Link>
             <button className="hover:text-primary transition">Explore</button>
             <button className="hover:text-primary transition">Category</button>
@@ -54,9 +145,60 @@ export default function Navbar() {
 
         {/* Right: Actions */}
         <div className="flex items-center gap-4">
-          <button className="p-2 text-darkText hover:bg-primary-hover rounded-full">
-            <BellRing size={20}/>
-          </button>
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              onClick={handleToggleNotifications}
+              className={`p-2 text-darkText hover:bg-primary-hover rounded-full transition-colors relative ${showNotifications ? 'bg-primary-hover' : ''}`}
+            >
+              <BellRing size={20} className={unreadCount > 0 ? "text-primary animate-pulse" : ""} />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 bg-accent-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white min-w-[20px] text-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </button>
+
+            {/* Notification Dropdown */}
+            {showNotifications && (
+              <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-softGray overflow-hidden z-50">
+                <div className="p-4 bg-primary/5 border-b border-softGray flex justify-between items-center">
+                  <h3 className="font-poppins font-bold text-sm text-darkText">Notifications</h3>
+                  {unreadCount > 0 && (
+                    <button 
+                      onClick={handleMarkAllRead}
+                      className="text-[10px] flex items-center gap-1 text-primary hover:underline font-bold"
+                    >
+                      <CheckCheck size={12} /> Mark all as read
+                    </button>
+                  )}
+                </div>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="p-8 text-center">
+                      <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                         <BellRing size={24} className="text-slate-300" />
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium">All quiet in the neighborhood!</p>
+                    </div>
+                  ) : (
+                    notifications.map(n => (
+                      <Link 
+                        key={n.id} 
+                        href={n.link || "#"}
+                        onClick={() => setShowNotifications(false)}
+                        className={`block p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors ${!n.isRead ? "bg-primary/5" : ""}`}
+                      >
+                        <p className={`text-xs ${!n.isRead ? "text-darkText font-bold" : "text-slate-600"}`}>{n.message}</p>
+                        <span className="text-[10px] text-slate-400 mt-1 block">
+                          {new Date(n.createdAt).toLocaleDateString()}
+                        </span>
+                      </Link>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
           
           {user ? (
             <div className="flex items-center gap-3">
@@ -86,4 +228,4 @@ export default function Navbar() {
       </div>
     </nav>
   );
-}
+}
