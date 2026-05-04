@@ -24,10 +24,24 @@ export default function SidebarLeft() {
               <span>Premium Plan</span>
             </li>
           </Link>
-          <li className="flex items-center gap-3 p-3 hover:bg-primary-hover hover:text-primary text-dark-text/70 rounded-xl cursor-pointer transition group">
-            <Users size={20} className="text-dark-text/40 group-hover:text-primary transition" />
-            <span>Neighbos</span>
-          </li>
+          <Link href="/neighbos">
+            <li className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition group ${pathname === "/neighbos" ? "bg-primary-hover text-primary" : "hover:bg-primary-hover hover:text-primary text-dark-text/70"}`}>
+              <Users size={20} className="text-dark-text/40 group-hover:text-primary transition" />
+              <span>Neighbos</span>
+            </li>
+          </Link>
+          <Link href="/followers">
+            <li className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition group ${pathname === "/followers" ? "bg-primary-hover text-primary" : "hover:bg-primary-hover hover:text-primary text-dark-text/70"}`}>
+              <Users size={20} className="text-dark-text/40 group-hover:text-primary transition" />
+              <span>Followers</span>
+            </li>
+          </Link>
+          <Link href="/following">
+            <li className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition group ${pathname === "/following" ? "bg-primary-hover text-primary" : "hover:bg-primary-hover hover:text-primary text-dark-text/70"}`}>
+              <Users size={20} className="text-dark-text/40 group-hover:text-primary transition" />
+              <span>Following</span>
+            </li>
+          </Link>
         </ul>
       </div>
 
