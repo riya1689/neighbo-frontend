@@ -23,13 +23,14 @@ export default function CategoryManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (res.ok && Array.isArray(data)) {
         setCategories(data);
       } else {
         setCategories([]);
+        toast.error(data.message || "Failed to load categories");
       }
-    } catch (e) {
-      toast.error("Failed to fetch categories");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to fetch categories");
     } finally {
       setLoading(false);
     }
@@ -57,9 +58,12 @@ export default function CategoryManagement() {
         toast.success("Category created");
         setNewName("");
         fetchCategories();
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to create category");
       }
-    } catch (e) {
-      toast.error("Failed to create category");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to create category");
     }
   };
 
@@ -75,9 +79,12 @@ export default function CategoryManagement() {
       if (res.ok) {
         toast.success("Category deleted");
         fetchCategories();
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to delete category");
       }
-    } catch (e) {
-      toast.error("Failed to delete category");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to delete category");
     }
   };
 

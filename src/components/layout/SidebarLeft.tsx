@@ -1,21 +1,29 @@
 "use client";
 import { motion } from "framer-motion";
 import { Home, Gem, Users, UserPlus } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function SidebarLeft() {
+  const pathname = usePathname();
+
   return (
     <div className="flex flex-col gap-6 h-full">
       {/* --- MENU ITEMS SECTION --- */}
       <div className="bg-white rounded-2xl p-4 shadow-sm border border-soft-gray">
         <ul className="space-y-1 font-poppins font-medium">
-          <li className="flex items-center gap-3 p-3 bg-primary-hover text-primary rounded-xl cursor-pointer transition group">
-            <Home size={20} className="group-hover:scale-110 transition-transform" />
-            <span>Home</span>
-          </li>
-          <li className="flex items-center gap-3 p-3 hover:bg-primary-hover hover:text-primary text-dark-text/70 rounded-xl cursor-pointer transition group">
-            <Gem size={20} className="text-dark-text/40 group-hover:text-primary transition" />
-            <span>Premium Plan</span>
-          </li>
+          <Link href="/">
+            <li className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition group ${pathname === "/" ? "bg-primary-hover text-primary" : "hover:bg-primary-hover hover:text-primary text-dark-text/70"}`}>
+              <Home size={20} className="group-hover:scale-110 transition-transform" />
+              <span>Home</span>
+            </li>
+          </Link>
+          <Link href="/premium">
+            <li className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition group ${pathname === "/premium" ? "bg-primary-hover text-primary" : "hover:bg-primary-hover hover:text-primary text-dark-text/70"}`}>
+              <Gem size={20} className="text-dark-text/40 group-hover:text-primary transition" />
+              <span>Premium Plan</span>
+            </li>
+          </Link>
           <li className="flex items-center gap-3 p-3 hover:bg-primary-hover hover:text-primary text-dark-text/70 rounded-xl cursor-pointer transition group">
             <Users size={20} className="text-dark-text/40 group-hover:text-primary transition" />
             <span>Neighbos</span>

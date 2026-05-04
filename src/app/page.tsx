@@ -7,7 +7,7 @@ import PostFeed from "@/components/home/PostFeed";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background font-inter text-darkText">
+    <div className="min-h-screen bg-background font-inter text-dark-text">
       {/* --- NAVBAR --- */}
       <Navbar />
 

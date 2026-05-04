@@ -31,13 +31,14 @@ export default function PlanManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (res.ok && Array.isArray(data)) {
         setPlans(data);
       } else {
         setPlans([]);
+        toast.error(data.message || "Failed to load plans");
       }
-    } catch (e) {
-      toast.error("Failed to fetch plans");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to fetch plans");
     } finally {
       setLoading(false);
     }
@@ -64,9 +65,12 @@ export default function PlanManagement() {
         toast.success("Premium plan created");
         setFormData({ name: "", description: "", price: "", duration: "" });
         fetchPlans();
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to create plan");
       }
-    } catch (e) {
-      toast.error("Failed to create plan");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to create plan");
     }
   };
 
@@ -82,9 +86,12 @@ export default function PlanManagement() {
       if (res.ok) {
         toast.success("Plan deleted");
         fetchPlans();
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to delete plan");
       }
-    } catch (e) {
-      toast.error("Failed to delete plan");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to delete plan");
     }
   };
 

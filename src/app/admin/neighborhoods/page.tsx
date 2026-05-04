@@ -25,13 +25,14 @@ export default function NeighborhoodManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (res.ok && Array.isArray(data)) {
         setNeighborhoods(data);
       } else {
         setNeighborhoods([]);
+        toast.error(data.message || "Failed to load neighborhoods");
       }
-    } catch (e) {
-      toast.error("Failed to fetch neighborhoods");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to fetch neighborhoods");
     } finally {
       setLoading(false);
     }
@@ -60,9 +61,12 @@ export default function NeighborhoodManagement() {
         setName("");
         setDescription("");
         fetchNeighborhoods();
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to create neighborhood");
       }
-    } catch (e) {
-      toast.error("Failed to create neighborhood");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to create neighborhood");
     }
   };
 
@@ -78,9 +82,12 @@ export default function NeighborhoodManagement() {
       if (res.ok) {
         toast.success("Neighborhood deleted");
         fetchNeighborhoods();
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to delete neighborhood");
       }
-    } catch (e) {
-      toast.error("Failed to delete neighborhood");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to delete neighborhood");
     }
   };
 

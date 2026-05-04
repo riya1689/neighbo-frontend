@@ -24,7 +24,14 @@ interface Stats {
 }
 
 export default function AdminOverview() {
-  const [stats, setStats] = useState<Stats | null>(null);
+  const [stats, setStats] = useState<Stats>({
+    totalUsers: 0,
+    totalPremiumUsers: 0,
+    totalRevenue: 0,
+    totalPremiumPlanPurchases: 0,
+    totalCategories: 0,
+    totalNeighborhoods: 0
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,10 +42,17 @@ export default function AdminOverview() {
         const res = await fetch(`${apiUrl}/admin/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.message || "Failed to fetch dashboard statistics");
+        }
+
         const data = await res.json();
         setStats(data);
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
+        toast.error(e.message || "Session error: Please login again.");
       } finally {
         setLoading(false);
       }

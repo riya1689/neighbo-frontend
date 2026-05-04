@@ -29,14 +29,14 @@ export default function UserManagement() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (res.ok && Array.isArray(data)) {
         setUsers(data);
       } else {
         setUsers([]);
-        console.error("Expected array but got:", data);
+        toast.error(data.message || "Failed to load users");
       }
-    } catch (e) {
-      toast.error("Failed to fetch users");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to fetch users");
     } finally {
       setLoading(false);
     }
@@ -66,9 +66,12 @@ export default function UserManagement() {
       if (res.ok) {
         toast.success(`User ${newStatus.toLowerCase()} successfully`);
         fetchUsers();
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to update status");
       }
-    } catch (e) {
-      toast.error("Failed to update status");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to update status");
     }
   };
 
