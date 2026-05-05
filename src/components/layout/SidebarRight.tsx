@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import { Zap, UserPlus, Calendar, MapPin, Check, Users } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import ViewProfileButton from "../common/ViewProfileButton";
 
 interface SuggestedUser {
   id: string;
   name: string;
+  username: string;
   neighborhood?: { name: string };
 }
 
@@ -134,16 +136,22 @@ export default function SidebarRight() {
                     </div>
                   </div>
                 </div>
-                <button 
-                  onClick={() => handleFollow(user.id)}
-                  className={`p-2 rounded-lg transition-all ${
-                    followingIds.has(user.id) 
-                      ? "bg-slate-100 text-slate-400" 
-                      : "text-primary bg-primary/5 hover:bg-primary hover:text-white"
-                  }`}
-                >
-                  {followingIds.has(user.id) ? <Check size={16} /> : <UserPlus size={16} />}
-                </button>
+                <div className="flex items-center gap-1">
+                  <ViewProfileButton 
+                    username={user.username} 
+                    variant="icon" 
+                  />
+                  <button 
+                    onClick={() => handleFollow(user.id)}
+                    className={`p-2 rounded-lg transition-all ${
+                      followingIds.has(user.id) 
+                        ? "bg-slate-100 text-slate-400" 
+                        : "text-primary bg-primary/5 hover:bg-primary hover:text-white"
+                    }`}
+                  >
+                    {followingIds.has(user.id) ? <Check size={16} /> : <UserPlus size={16} />}
+                  </button>
+                </div>
               </div>
             ))
           )}
