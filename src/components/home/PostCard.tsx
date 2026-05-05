@@ -33,6 +33,8 @@ interface PostProps {
     netVotes?: number;
     commentCount?: number;
     userVote?: string | null;
+    shareCount?: number;
+    sharedBy?: string | null;
   };
 }
 
@@ -51,6 +53,7 @@ export default function PostCard({ post }: PostProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [replyTo, setReplyTo] = useState<string | null>(null);
+  const [shareCount, setShareCount] = useState(post.shareCount || 0);
 
   const handleVote = async (type: "UPVOTE" | "DOWNVOTE") => {
     try {
@@ -122,6 +125,39 @@ export default function PostCard({ post }: PostProps) {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Please login to share");
+        return;
+      }
+
+      if (!window.confirm("Are you sure you want to share this post?")) {
+        return;
+      }
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const res = await fetch(`${apiUrl}/posts/${post.id}/share`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setShareCount(data.shareCount);
+        toast.success("Post shared successfully!");
+      } else {
+        toast.error("Failed to share post");
+      }
+    } catch (e) {
+      toast.error("Failed to share post");
+    }
+  };
+
+
   useEffect(() => {
     if (showComments) {
       fetchComments();
@@ -130,6 +166,12 @@ export default function PostCard({ post }: PostProps) {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all hover:shadow-md">
+      {post.sharedBy && (
+        <div className="bg-slate-50 px-5 py-2 flex items-center gap-2 border-b border-slate-100 text-xs text-slate-500 font-medium">
+          <Share2 size={14} className="text-primary" />
+          <span className="font-bold text-slate-700">{post.sharedBy}</span> shared this post
+        </div>
+      )}
       {/* Post Header */}
       <div className="p-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -220,11 +262,14 @@ export default function PostCard({ post }: PostProps) {
           </button>
         </div>
 
-        <button className="flex items-center gap-2 text-slate-400 hover:text-primary transition group">
+        <button 
+          onClick={handleShare}
+          className="flex items-center gap-2 text-slate-400 hover:text-primary transition group"
+        >
           <div className="p-2 bg-white border border-slate-100 group-hover:bg-primary/5 rounded-xl transition group-hover:border-primary/10">
             <Share2 size={20} />
           </div>
-          <span className="text-sm font-bold hidden sm:inline">Share</span>
+          <span className="text-sm font-bold">{shareCount > 0 ? shareCount : "Share"}</span>
         </button>
       </div>
 

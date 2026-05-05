@@ -15,6 +15,9 @@ interface Post {
   user: { name: string };
   category: { name: string };
   neighborhood: { name: string };
+  shareCount?: number;
+  sharedBy?: string | null;
+  feedId?: string;
 }
 
 export default function PostFeed() {
@@ -145,7 +148,7 @@ export default function PostFeed() {
   return (
     <div className="space-y-6" ref={lastPostElementRef}>
       {posts.map(post => (
-        <div key={post.id} data-post-id={post.id}>
+        <div key={post.feedId || post.id} data-post-id={post.id}>
           <PostCard post={post} />
         </div>
       ))}
