@@ -6,10 +6,12 @@ import SidebarLeft from "@/components/layout/SidebarLeft";
 import SidebarRight from "@/components/layout/SidebarRight";
 import { UserPlus, MapPin, Users, UserMinus } from "lucide-react";
 import toast from "react-hot-toast";
+import ViewProfileButton from "@/components/common/ViewProfileButton";
 
 interface Neighbor {
   id: string;
   name: string;
+  username: string;
   neighborhood?: { name: string };
 }
 
@@ -120,6 +122,7 @@ export default function FollowingPage() {
                         </div>
                       </div>
                       <div className="flex gap-2">
+                        <ViewProfileButton username={neighbor.username} variant="ghost" />
                         <button 
                           onClick={() => handleUnfollow(neighbor.id)}
                           className="px-4 py-2 bg-slate-50 text-slate-500 rounded-xl text-xs font-bold hover:bg-red-50 hover:text-red-500 transition-all flex items-center gap-2"
