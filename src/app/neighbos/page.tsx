@@ -7,10 +7,12 @@ import SidebarRight from "@/components/layout/SidebarRight";
 import { Users, UserCheck, UserPlus, MapPin, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import ViewProfileButton from "@/components/common/ViewProfileButton";
 
 interface Neighbor {
   id: string;
   name: string;
+  username: string;
   neighborhood?: { name: string };
 }
 
@@ -159,9 +161,7 @@ export default function NeighbosHub() {
                             </div>
                           </div>
                         </div>
-                        <button className="px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-600 hover:bg-slate-50 transition-all">
-                          View Profile
-                        </button>
+                        <ViewProfileButton username={neighbor.username} />
                       </div>
                     ))}
                   </div>
