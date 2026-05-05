@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   MoreHorizontal, 
   ArrowBigUp, 
@@ -27,7 +28,7 @@ interface PostProps {
     isPremium: boolean;
     price: number;
     createdAt: string;
-    user: { name: string };
+    user: { name: string; username?: string };
     category: { name: string };
     neighborhood: { name: string };
     netVotes?: number;
@@ -175,14 +176,17 @@ export default function PostCard({ post }: PostProps) {
       {/* Post Header */}
       <div className="p-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+          <Link 
+            href={`/profile/${post.user.username || 'me'}`}
+            className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary hover:bg-primary/20 transition-colors"
+          >
             {post.user.name.charAt(0)}
-          </div>
+          </Link>
           <div>
-            <div className="flex items-center gap-1.5">
-              <h4 className="font-bold text-slate-800 text-sm">{post.user.name}</h4>
+            <Link href={`/profile/${post.user.username || 'me'}`} className="flex items-center gap-1.5 group/name">
+              <h4 className="font-bold text-slate-800 text-sm group-hover/name:text-primary transition-colors">{post.user.name}</h4>
               <ShieldCheck size={14} className="text-primary" />
-            </div>
+            </Link>
             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               <Clock size={12} className="text-slate-300" />
               {formatDistanceToNow(new Date(post.createdAt))} ago
