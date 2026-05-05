@@ -202,10 +202,13 @@ export default function Navbar() {
           
           {user ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-full border border-softGray">
-                <UserIcon size={16} className="text-primary" />
-                <span className="text-sm font-semibold text-darkText">{user.name}</span>
-              </div>
+              <Link 
+                href={`/profile/${user.username || 'me'}`}
+                className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-full border border-softGray hover:border-primary/30 transition-colors group"
+              >
+                <UserIcon size={16} className="text-primary group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-semibold text-darkText group-hover:text-primary transition-colors">{user.name}</span>
+              </Link>
               <button 
                 onClick={handleLogout}
                 className="p-2 text-darkText hover:text-accent-red hover:bg-accent-red/10 rounded-full transition-colors"
