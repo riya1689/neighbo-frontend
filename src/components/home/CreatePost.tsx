@@ -38,6 +38,7 @@ export default function CreatePost() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("");
   const [isPremium, setIsPremium] = useState(false);
+  const [unlockPrice, setUnlockPrice] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
@@ -77,6 +78,11 @@ export default function CreatePost() {
       return;
     }
 
+    if (isPremium && (!unlockPrice || Number(unlockPrice) <= 0)) {
+      toast.error("Please set a valid unlock price (BDT) for premium content.");
+      return;
+    }
+
     setLoading(true);
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
     const token = localStorage.getItem("token");
@@ -94,6 +100,7 @@ export default function CreatePost() {
           categoryId: selectedCategory,
           neighborhoodId: selectedNeighborhood,
           isPremium,
+          unlockPrice: isPremium ? Number(unlockPrice) : undefined,
           images: imageUrl ? [imageUrl] : []
         })
       });
@@ -106,6 +113,7 @@ export default function CreatePost() {
         setContent("");
         setImageUrl("");
         setIsPremium(false);
+        setUnlockPrice("");
       } else {
         const error = await res.json();
         toast.error(error.message || "Failed to create post");
@@ -279,6 +287,26 @@ export default function CreatePost() {
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isPremium ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
+
+              {/* Unlock Price Input (shown when premium toggled ON) */}
+              {isPremium && (
+                <div className="mt-3 p-4 rounded-2xl border border-amber-200 bg-amber-50/50 space-y-2">
+                  <label className="text-xs font-bold text-amber-700 uppercase tracking-wider">Set Unlock Price (BDT)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-600 font-bold text-sm">৳</span>
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      placeholder="e.g. 50"
+                      value={unlockPrice}
+                      onChange={(e) => setUnlockPrice(e.target.value)}
+                      className="w-full pl-8 pr-5 py-3 rounded-xl bg-white border border-amber-200 focus:ring-2 ring-amber-300 focus:border-amber-400 outline-none transition-all font-bold text-slate-800"
+                    />
+                  </div>
+                  <p className="text-[10px] text-amber-600">Users will pay this amount to unlock and view the full content of your post.</p>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex gap-4 pt-4 border-t border-slate-100">

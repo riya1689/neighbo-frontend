@@ -5,7 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import SidebarLeft from "@/components/layout/SidebarLeft";
 import SidebarRight from "@/components/layout/SidebarRight";
 import { motion } from "framer-motion";
-import { Gem, Check, Star, ArrowRight, Zap, ShieldCheck } from "lucide-react";
+import { Gem, Check, Star, ArrowRight, Zap, ShieldCheck, X, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface Plan {
@@ -19,6 +19,8 @@ interface Plan {
 export default function PremiumPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [paying, setPaying] = useState(false);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -27,7 +29,7 @@ export default function PremiumPage() {
         const res = await fetch(`${apiUrl}/plans`);
         const data = await res.json();
         if (Array.isArray(data)) {
-          const sorted = data.sort((a, b) => a.price - b.price);
+          const sorted = data.sort((a: Plan, b: Plan) => a.price - b.price);
           setPlans(sorted);
         }
       } catch (e) {
@@ -39,6 +41,45 @@ export default function PremiumPage() {
     };
     fetchPlans();
   }, []);
+
+  const handlePurchase = async () => {
+    if (!selectedPlan) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to purchase a plan.");
+      return;
+    }
+
+    setPaying(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const res = await fetch(`${apiUrl}/payments/initiate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          type: "PLAN",
+          planId: selectedPlan.id,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.url) {
+        // Redirect to SSLCommerz Gateway
+        window.location.href = data.url;
+      } else {
+        toast.error(data.message || "Failed to initiate payment.");
+      }
+    } catch (err) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setPaying(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background font-inter text-dark-text">
@@ -142,13 +183,14 @@ export default function PremiumPage() {
                         </ul>
 
                         <button 
+                          onClick={() => setSelectedPlan(plan)}
                           className={`w-full py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] active:scale-[0.98] ${
                             isPopular 
                               ? "bg-primary text-white shadow-lg shadow-primary/30 hover:bg-primary-dark" 
                               : "bg-slate-50 text-slate-700 hover:bg-slate-100"
                           }`}
                         >
-                          Select {plan.name}
+                          Get Started
                           <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
                         </button>
                       </div>
@@ -209,6 +251,73 @@ export default function PremiumPage() {
           </section>
         </div>
       </main>
+
+      {/* ──── CONFIRMATION MODAL ──── */}
+      {selectedPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden"
+          >
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-800 font-poppins">Confirm Purchase</h2>
+              <button
+                onClick={() => setSelectedPlan(null)}
+                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="bg-primary/5 rounded-2xl p-6 border border-primary/10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-primary/10 rounded-xl">
+                    <Gem size={20} className="text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-800">{selectedPlan.name}</h3>
+                    <p className="text-xs text-slate-500">{selectedPlan.duration} days access</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center pt-4 border-t border-primary/10">
+                  <span className="text-sm font-bold text-slate-600">Total Price</span>
+                  <span className="text-2xl font-black text-primary">৳{selectedPlan.price.toLocaleString()} BDT</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-400 text-center">
+                You will be redirected to SSLCommerz secure payment gateway to complete the transaction.
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setSelectedPlan(null)}
+                  className="flex-1 py-3.5 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handlePurchase}
+                  disabled={paying}
+                  className="flex-1 py-3.5 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 transition shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {paying ? (
+                    <Loader2 size={20} className="animate-spin" />
+                  ) : (
+                    <>
+                      Proceed to Pay
+                      <ArrowRight size={18} />
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

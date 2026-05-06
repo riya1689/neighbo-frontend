@@ -27,6 +27,8 @@ interface PostProps {
     images: string[];
     isPremium: boolean;
     price: number;
+    unlockPrice?: number | null;
+    isUnlocked?: boolean;
     createdAt: string;
     user: { displayName: string; username?: string };
     category: { name: string };
@@ -55,6 +57,39 @@ export default function PostCard({ post }: PostProps) {
   const [newComment, setNewComment] = useState("");
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [shareCount, setShareCount] = useState(post.shareCount || 0);
+  const [unlocking, setUnlocking] = useState(false);
+
+  // Check if this premium post is locked for the current user
+  const currentUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
+  const isOwner = currentUser?.id === (post as any).userId;
+  const isLocked = post.isPremium && post.unlockPrice && !post.isUnlocked && !isOwner;
+
+  const handleUnlock = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Please login to unlock this post.');
+      return;
+    }
+    setUnlocking(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${apiUrl}/payments/initiate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ type: 'UNLOCK', postId: post.id }),
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error(data.message || 'Failed to initiate payment.');
+      }
+    } catch (e) {
+      toast.error('Something went wrong.');
+    } finally {
+      setUnlocking(false);
+    }
+  };
 
   const handleVote = async (type: "UPVOTE" | "DOWNVOTE") => {
     try {
@@ -202,7 +237,33 @@ export default function PostCard({ post }: PostProps) {
       <div className="px-5 pb-4 space-y-4">
         <div>
           <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">{post.title}</h3>
-          <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+          {isLocked ? (
+            <div className="relative">
+              <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap blur-sm select-none">
+                {post.content.slice(0, 200)}...
+              </p>
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white flex flex-col items-center justify-end pb-4">
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center w-full max-w-xs">
+                  <Lock size={20} className="text-amber-600 mx-auto mb-2" />
+                  <p className="text-sm font-bold text-slate-800 mb-1">Premium Content</p>
+                  <p className="text-xs text-slate-500 mb-3">Pay to unlock this post</p>
+                  <button
+                    onClick={handleUnlock}
+                    disabled={unlocking}
+                    className="w-full py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition flex items-center justify-center gap-2 text-sm disabled:opacity-50 shadow-lg shadow-primary/20"
+                  >
+                    {unlocking ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>৳{post.unlockPrice} BDT — Unlock Now</>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -217,12 +278,12 @@ export default function PostCard({ post }: PostProps) {
           {post.isPremium && (
             <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-bold border border-amber-100">
               <Lock size={12} />
-              Premium
+              {post.unlockPrice ? `৳${post.unlockPrice} BDT` : 'Premium'}
             </div>
           )}
         </div>
 
-        {post.images && post.images.length > 0 && (
+        {!isLocked && post.images && post.images.length > 0 && (
           <div className="rounded-2xl overflow-hidden border border-slate-100 mt-2">
             <img 
               src={post.images[0]} 
