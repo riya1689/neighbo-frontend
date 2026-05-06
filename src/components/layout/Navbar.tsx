@@ -1,9 +1,9 @@
 "use client";
 
-import { BellRing, LogOut, User as UserIcon, Search as SearchIcon, CheckCheck } from "lucide-react";
+import { BellRing, LogOut, User as UserIcon, Search as SearchIcon, CheckCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 
 interface Notification {
@@ -22,6 +22,7 @@ export default function Navbar() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -137,9 +138,14 @@ export default function Navbar() {
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-darkText/40" size={18} />
           </form>
           <div className="flex gap-4 font-poppins font-medium text-sm whitespace-nowrap">
-            <Link href="/" className="text-primary border-b-2 border-primary">Home</Link>
-            <button className="hover:text-primary transition">Explore</button>
-            <button className="hover:text-primary transition">Category</button>
+            <Link href="/" className={`${pathname === "/" ? "text-primary border-b-2 border-primary" : "hover:text-primary transition"}`}>Home</Link>
+            <Link href="/explore" className={`${pathname.includes("/explore") ? "text-primary border-b-2 border-primary" : "hover:text-primary transition"}`}>Explore</Link>
+            <Link href="/categories" className={`${pathname.includes("/categories") ? "text-primary border-b-2 border-primary" : "hover:text-primary transition"}`}>Category</Link>
+            <Link href="/ai" className="flex items-center gap-1 hover:text-primary transition group relative">
+              <Sparkles size={14} className="text-purple-500 group-hover:animate-pulse" />
+              <span>Neighbo AI</span>
+              <span className="text-[8px] font-black uppercase bg-slate-100 text-slate-400 px-1 py-0.5 rounded ml-1">Soon</span>
+            </Link>
           </div>
         </div>
 
