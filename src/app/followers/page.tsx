@@ -10,7 +10,7 @@ import ViewProfileButton from "@/components/common/ViewProfileButton";
 
 interface Neighbor {
   id: string;
-  name: string;
+  displayName: string;
   username: string;
   neighborhood?: { name: string };
 }
@@ -115,12 +115,12 @@ export default function FollowersPage() {
                     >
                       <div className="flex items-center gap-4">
                         <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white font-bold text-slate-700">
-                          {neighbor.name.charAt(0)}
+                          {(neighbor.displayName || neighbor.name || "").charAt(0)}
                         </div>
 
                         <div>
                           <h4 className="font-bold text-slate-800 transition-colors group-hover:text-primary">
-                            {neighbor.name}
+                            {neighbor.displayName || neighbor.name}
                           </h4>
 
                           <div className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-500">

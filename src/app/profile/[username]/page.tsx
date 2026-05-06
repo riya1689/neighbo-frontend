@@ -20,7 +20,8 @@ import Link from 'next/link';
 
 interface UserProfile {
   id: string;
-  name: string;
+  displayName: string;
+  name?: string;
   username: string;
   bio: string | null;
   role: string;
@@ -114,7 +115,7 @@ export default function ProfilePage() {
                   <div className="relative">
                     <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white p-1.5 shadow-md border border-slate-50">
                       <div className="w-full h-full rounded-[1.25rem] bg-primary/10 flex items-center justify-center text-3xl sm:text-4xl font-black text-primary">
-                        {profile.name.charAt(0)}
+                        {(profile.displayName || profile.name || "?").charAt(0)}
                       </div>
                     </div>
                   </div>
@@ -130,7 +131,7 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h1 className="text-2xl font-black text-slate-900">{profile.name}</h1>
+                      <h1 className="text-2xl font-black text-slate-900">{profile.displayName || profile.name}</h1>
                       {profile.isPremium && (
                         <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase border border-amber-100">
                           <ShieldCheck size={10} /> Premium

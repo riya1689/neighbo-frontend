@@ -64,7 +64,7 @@ export default function SidebarLeft() {
     { name: "Neighbos", icon: <Users size={20} />, href: "/neighbos" },
     { name: "Category", icon: <LayoutGrid size={20} />, href: "/categories" },
     { name: "View Profile", icon: <UserCircle size={20} />, href: user ? `/profile/${user.username || 'me'}` : "/login" },
-    { name: "Edit Profile", icon: <Settings size={20} />, href: "/edit-profile", comingSoon: true },
+    { name: "Edit Profile", icon: <Settings size={20} />, href: "/edit-profile" },
     { name: "My Dashboard", icon: <LayoutDashboard size={20} />, href: "/dashboard", comingSoon: true },
   ];
 

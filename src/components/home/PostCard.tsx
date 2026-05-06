@@ -28,7 +28,7 @@ interface PostProps {
     isPremium: boolean;
     price: number;
     createdAt: string;
-    user: { name: string; username?: string };
+    user: { displayName: string; username?: string };
     category: { name: string };
     neighborhood: { name: string };
     netVotes?: number;
@@ -43,7 +43,7 @@ interface Comment {
   id: string;
   content: string;
   createdAt: string;
-  user: { name: string };
+  user: { displayName: string };
   replies?: Comment[];
 }
 
@@ -180,11 +180,11 @@ export default function PostCard({ post }: PostProps) {
             href={`/profile/${post.user.username || 'me'}`}
             className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary hover:bg-primary/20 transition-colors"
           >
-            {post.user.name.charAt(0)}
+            {post.user.displayName.charAt(0)}
           </Link>
           <div>
             <Link href={`/profile/${post.user.username || 'me'}`} className="flex items-center gap-1.5 group/name">
-              <h4 className="font-bold text-slate-800 text-sm group-hover/name:text-primary transition-colors">{post.user.name}</h4>
+              <h4 className="font-bold text-slate-800 text-sm group-hover/name:text-primary transition-colors">{post.user.displayName}</h4>
               <ShieldCheck size={14} className="text-primary" />
             </Link>
             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -283,7 +283,7 @@ export default function PostCard({ post }: PostProps) {
           {/* Add Comment Input */}
           <div className="flex gap-3 mb-6">
             <div className="w-8 h-8 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center font-bold text-primary text-xs uppercase">
-              {localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).name.charAt(0) : "?"}
+              {localStorage.getItem("user") ? (JSON.parse(localStorage.getItem("user")!).displayName || JSON.parse(localStorage.getItem("user")!).name || "?").charAt(0) : "?"}
             </div>
             <div className="relative flex-1">
               <input 
@@ -309,12 +309,12 @@ export default function PostCard({ post }: PostProps) {
               <div key={comment.id} className="space-y-4">
                 <div className="flex gap-3">
                   <div className="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-[10px]">
-                    {comment.user.name.charAt(0)}
+                    {comment.user.displayName.charAt(0)}
                   </div>
                   <div className="flex-1">
                     <div className="bg-white border border-slate-100 p-3 rounded-2xl rounded-tl-none shadow-sm inline-block min-w-[150px]">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-slate-800">{comment.user.name}</span>
+                        <span className="text-xs font-bold text-slate-800">{comment.user.displayName}</span>
                         <span className="text-[10px] text-slate-400">{formatDistanceToNow(new Date(comment.createdAt))} ago</span>
                       </div>
                       <p className="text-sm text-slate-600">{comment.content}</p>
@@ -336,12 +336,12 @@ export default function PostCard({ post }: PostProps) {
                     {comment.replies.map((reply) => (
                       <div key={reply.id} className="flex gap-3">
                         <div className="w-6 h-6 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center font-bold text-slate-400 text-[8px]">
-                          {reply.user.name.charAt(0)}
+                          {reply.user.displayName.charAt(0)}
                         </div>
                         <div className="flex-1">
                           <div className="bg-white border border-slate-100 p-3 rounded-2xl rounded-tl-none shadow-sm inline-block">
                             <div className="flex items-center justify-between mb-1 gap-4">
-                              <span className="text-[11px] font-bold text-slate-800">{reply.user.name}</span>
+                              <span className="text-[11px] font-bold text-slate-800">{reply.user.displayName}</span>
                               <span className="text-[9px] text-slate-400">{formatDistanceToNow(new Date(reply.createdAt))} ago</span>
                             </div>
                             <p className="text-xs text-slate-600">{reply.content}</p>

@@ -127,10 +127,10 @@ export default function SidebarRight() {
               <div key={user.id} className="flex items-center justify-between group">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs border border-primary/5">
-                    {user.name.charAt(0)}
+                    {user.displayName.charAt(0)}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-poppins font-bold text-dark-text">{user.name}</span>
+                    <span className="text-sm font-poppins font-bold text-dark-text">{user.displayName}</span>
                     <div className="flex items-center gap-1 text-[10px] text-dark-text/50">
                       <MapPin size={10} /> <span>{user.neighborhood?.name || "Neighbor"}</span>
                     </div>

@@ -213,7 +213,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 px-3 py-1.5 bg-background rounded-full border border-softGray hover:border-primary/30 transition-colors group"
               >
                 <UserIcon size={16} className="text-primary group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-semibold text-darkText group-hover:text-primary transition-colors">{user.name}</span>
+                <span className="text-sm font-semibold text-darkText group-hover:text-primary transition-colors">{user.displayName || user.name}</span>
               </Link>
               <button 
                 onClick={handleLogout}

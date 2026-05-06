@@ -11,7 +11,7 @@ import ViewProfileButton from "@/components/common/ViewProfileButton";
 
 interface Neighbor {
   id: string;
-  name: string;
+  displayName: string;
   username: string;
   neighborhood?: { name: string };
 }
@@ -151,10 +151,10 @@ export default function NeighbosHub() {
                       <div key={neighbor.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-primary/20 transition-all group">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center font-bold text-slate-700 text-xs">
-                            {neighbor.name.charAt(0)}
+                            {(neighbor.displayName || neighbor.name || "").charAt(0)}
                           </div>
                           <div>
-                            <h4 className="font-bold text-slate-800 text-xs">{neighbor.name}</h4>
+                            <h4 className="font-bold text-slate-800 text-xs">{neighbor.displayName || neighbor.name}</h4>
                             <div className="flex items-center gap-1 text-[10px] text-slate-500">
                               <MapPin size={10} />
                               <span>{neighbor.neighborhood?.name || "Neighbor"}</span>

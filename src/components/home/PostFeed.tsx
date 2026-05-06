@@ -12,7 +12,7 @@ interface Post {
   isPremium: boolean;
   price: number;
   createdAt: string;
-  user: { name: string; username?: string };
+  user: { displayName: string; name?: string; username?: string };
   category: { name: string };
   neighborhood: { name: string };
   shareCount?: number;
