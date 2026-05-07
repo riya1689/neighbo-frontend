@@ -11,7 +11,7 @@ interface Payment {
   transactionId: string;
   paymentMethod: string;
   createdAt: string;
-  user: { name: string; email: string };
+  user: { displayName: string; email: string };
   invoice: { invoiceNumber: string } | null;
 }
 
@@ -82,7 +82,7 @@ export default function PaymentOverview() {
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="font-bold text-slate-800">{p.user.displayName || p.user.name}</p>
+                        <p className="font-bold text-slate-800">{p.user.displayName}</p>
                         <p className="text-xs text-slate-500">{p.user.email}</p>
                       </div>
                     </td>

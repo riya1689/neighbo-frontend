@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { API_URL } from "@/config/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,11 +17,10 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-
+    // REMOVE: const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
     try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
+      // CHANGE: Use centralized API_URL
+      const response = await fetch(`${API_URL}/auth/login`, { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",

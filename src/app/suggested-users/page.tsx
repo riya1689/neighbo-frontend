@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 
 interface SuggestedUser {
   id: string;
-  name: string;
+  displayName: string;
   neighborhood?: { name: string };
 }
 
@@ -75,9 +75,8 @@ export default function SuggestedUsersPage() {
   };
 
   const filteredUsers = users.filter(user => 
-    (user.displayName || user.name).toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+    (user.displayName).toLowerCase().includes(searchQuery.toLowerCase())
+   );
   return (
     <div className="min-h-screen bg-background font-inter text-dark-text">
       <Navbar />
@@ -134,10 +133,10 @@ export default function SuggestedUsersPage() {
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary border border-primary/5">
-                          {(user.displayName || user.name).charAt(0)}
+                          {user.displayName.charAt(0)}
                         </div>
                         <div>
-                          <h4 className="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">{user.displayName || user.name}</h4>
+                          <h4 className="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">{user.displayName}</h4>
                           <div className="flex items-center gap-1 text-[11px] text-slate-500">
                             <MapPin size={12} />
                             <span>{user.neighborhood?.name || "Neighbor"}</span>

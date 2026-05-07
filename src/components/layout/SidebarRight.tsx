@@ -8,7 +8,7 @@ import ViewProfileButton from "../common/ViewProfileButton";
 
 interface SuggestedUser {
   id: string;
-  name: string;
+  displayName: string;
   username: string;
   neighborhood?: { name: string };
 }

@@ -100,7 +100,7 @@ export default function AdminOverview() {
         {cards.map((card) => (
           <div key={card.name} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-5 transition-transform hover:scale-[1.02]">
             <div className={`p-4 rounded-2xl ${card.bgColor}`}>
-              {React.cloneElement(card.icon as React.ReactElement, { size: 24 })}
+              {React.cloneElement(card.icon as React.ReactElement<{ size?: number }>, { size: 24 })}
             </div>
             <div>
               <p className="text-xs font-bold text-slate-400 tracking-wider mb-1 uppercase">{card.name}</p>

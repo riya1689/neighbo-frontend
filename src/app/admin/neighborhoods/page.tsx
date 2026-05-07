@@ -50,9 +50,9 @@ export default function NeighborhoodManagement() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       const res = await fetch(`${apiUrl}/admin/neighborhoods`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ name, description })
       });
@@ -110,9 +110,9 @@ export default function NeighborhoodManagement() {
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">District Name</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g., Dhanmondi, Banani" 
+                <input
+                  type="text"
+                  placeholder="e.g., Dhanmondi, Banani"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all"
@@ -121,14 +121,14 @@ export default function NeighborhoodManagement() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Description</label>
-                <textarea 
-                  placeholder="Brief overview of the area..." 
+                <textarea
+                  placeholder="Brief overview of the area..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all min-h-[100px]"
                 />
               </div>
-              <button 
+              <button
                 type="submit"
                 className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/25"
               >
@@ -158,7 +158,7 @@ export default function NeighborhoodManagement() {
                         <Navigation size={14} className="text-primary" />
                         <p className="font-bold text-slate-800">{n.name}</p>
                       </div>
-                      <button 
+                      <button
                         onClick={() => handleDelete(n.id)}
                         className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                       >

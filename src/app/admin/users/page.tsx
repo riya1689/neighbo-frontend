@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 interface User {
   id: string;
-  name: string;
+  displayName: string;
   email: string;
   role: string;
   status: string;
@@ -121,7 +121,7 @@ export default function UserManagement() {
                   <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
-                        <p className="font-bold text-slate-800">{user.displayName || user.name}</p>
+                        <p className="font-bold text-slate-800">{user.displayName}</p>
                         <p className="text-sm text-slate-500">{user.email}</p>
                       </div>
                     </td>

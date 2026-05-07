@@ -48,9 +48,9 @@ export default function CategoryManagement() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       const res = await fetch(`${apiUrl}/admin/categories`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ name: newName })
       });
@@ -108,16 +108,16 @@ export default function CategoryManagement() {
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">Category Name</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g., Services, Marketplace" 
+                <input
+                  type="text"
+                  placeholder="e.g., Services, Marketplace"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all"
                   required
                 />
               </div>
-              <button 
+              <button
                 type="submit"
                 className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/25"
               >
@@ -154,7 +154,7 @@ export default function CategoryManagement() {
                         <p className="text-[10px] text-slate-400 uppercase font-bold">{cat._count.posts} posts</p>
                       </div>
                     </div>
-                    <button 
+                    <button
                       onClick={() => handleDelete(cat.id)}
                       className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                       title="Delete Category"
