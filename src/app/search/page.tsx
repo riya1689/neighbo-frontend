@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import SidebarLeft from "@/components/layout/SidebarLeft";
@@ -8,12 +8,11 @@ import SidebarRight from "@/components/layout/SidebarRight";
 import PostCard from "@/components/home/PostCard";
 import { Search as SearchIcon, Filter, LayoutGrid, List } from "lucide-react";
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchResults = async () => {
       setLoading(true);
@@ -40,7 +39,7 @@ export default function SearchPage() {
 
       <main className="container mx-auto max-w-7xl px-4 pt-24">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          
+
           <aside className="hidden lg:block lg:col-span-3">
             <SidebarLeft />
           </aside>
@@ -93,5 +92,12 @@ export default function SearchPage() {
         </div>
       </main>
     </div>
+  );
+}
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="p-20 text-center">Loading search...</div>}>
+      <SearchContent />
+    </Suspense>
   );
 }
