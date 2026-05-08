@@ -27,7 +27,7 @@ export default function SidebarRight() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();;
       const res = await fetch(`${apiUrl}/users/suggested`, {
         headers: { Authorization: `Bearer ${token}` }
       });

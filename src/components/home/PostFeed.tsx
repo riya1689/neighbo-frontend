@@ -38,7 +38,7 @@ export default function PostFeed() {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
       await fetch(`${apiUrl}/posts/impressions`, {
         method: "POST",
         headers: { 

@@ -51,7 +51,7 @@ export default function Navbar() {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
       const res = await fetch(`${apiUrl}/notifications/unread-count`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -66,7 +66,7 @@ export default function Navbar() {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
       const res = await fetch(`${apiUrl}/notifications`, {
         headers: { Authorization: `Bearer ${token}` }
       });

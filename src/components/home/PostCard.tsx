@@ -173,7 +173,7 @@ export default function PostCard({ post }: PostProps) {
         return;
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
       const res = await fetch(`${apiUrl}/posts/${post.id}/share`, {
         method: "POST",
         headers: {

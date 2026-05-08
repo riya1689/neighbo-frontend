@@ -51,7 +51,7 @@ export default function CreatePost() {
   }, [isOpen]);
 
   const fetchMetadata = async () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
     try {
       const [catRes, neighRes] = await Promise.all([
         fetch(`${apiUrl}/categories`),
