@@ -65,7 +65,7 @@ export default function PostFeed() {
 
   const fetchPosts = async () => {
     const token = localStorage.getItem("token");
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
     
     try {
       // Use /feed for personalized feed if token exists, otherwise fallback to /posts

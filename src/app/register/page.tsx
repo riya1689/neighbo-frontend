@@ -11,7 +11,7 @@ interface Neighborhood {
 }
 
 export default function RegisterPage() {
-  const [name, setName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [neighborhoodId, setNeighborhoodId] = useState("");
@@ -55,7 +55,7 @@ export default function RegisterPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password, neighborhoodId }),
+        body: JSON.stringify({ displayName, email, password, neighborhoodId }),
       });
 
       const data = await response.json();
@@ -97,11 +97,11 @@ export default function RegisterPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-dark-text mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-dark-text mb-1">Display Name</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-soft-gray focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
               placeholder="John Doe"
               required
