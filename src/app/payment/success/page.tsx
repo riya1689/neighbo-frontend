@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import { motion } from "framer-motion";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import CashMemoModal from "@/components/payment/CashMemoModal";
 
-export default function PaymentSuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tranId = searchParams.get("tran_id");
@@ -85,9 +85,7 @@ export default function PaymentSuccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-inter">
-      <Navbar />
-      
+    <>
       <main className="container mx-auto max-w-2xl px-4 pt-32 pb-20">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -169,6 +167,22 @@ export default function PaymentSuccessPage() {
           onClose={() => setShowInvoice(false)}
         />
       )}
+    </>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <div className="min-h-screen bg-slate-50 font-inter">
+      <Navbar />
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="animate-spin text-primary w-10 h-10" />
+        </div>
+      }>
+        <SuccessContent />
+      </Suspense>
     </div>
   );
 }
+
