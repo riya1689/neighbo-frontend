@@ -72,7 +72,7 @@ export default function PremiumPage() {
         // Redirect to SSLCommerz Gateway
         window.location.href = data.url;
       } else {
-        toast.error(data.message || "Failed to initiate payment.");
+        toast.error(data.reason || data.message || "Failed to initiate payment.");
       }
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
