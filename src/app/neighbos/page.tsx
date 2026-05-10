@@ -52,6 +52,8 @@ export default function NeighbosHub() {
         followingRes.json()
       ]);
 
+      statsData.totalNeighbos = (statsData.followers || 0) + (statsData.following || 0);
+
       setStats(statsData);
       setFollowers(followersData);
       setFollowing(followingData);
@@ -90,16 +92,16 @@ export default function NeighbosHub() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:border-primary/20 transition-all cursor-pointer" onClick={() => setActiveTab("followers")}>
-                  <p className="text-2xl font-bold text-slate-800">{stats.followers}</p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Followers</p>
+                  <p className="text-4xl font-bold text-slate-800 mb-2">{stats.followers}</p>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Followers</p>
                 </div>
                 <div className="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:border-primary/20 transition-all cursor-pointer" onClick={() => setActiveTab("following")}>
-                  <p className="text-2xl font-bold text-slate-800">{stats.following}</p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Following</p>
+                  <p className="text-4xl font-bold text-slate-800 mb-2">{stats.following}</p>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Following</p>
                 </div>
                 <div className="bg-primary/5 rounded-2xl p-6 text-center border border-primary/10">
-                  <p className="text-2xl font-bold text-primary">{stats.totalNeighbos}</p>
-                  <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mt-1">Total Neighbos</p>
+                  <p className="text-4xl font-bold text-primary mb-2">{stats.totalNeighbos}</p>
+                  <p className="text-[11px] font-bold text-primary/60 uppercase tracking-widest mt-1">Total Neighbos</p>
                 </div>
               </div>
             </div>

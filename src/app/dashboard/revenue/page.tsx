@@ -20,7 +20,7 @@ interface Transaction {
   status: string;
   tranId: string;
   createdAt: string;
-  payer: { displayName: string; email: string };
+  payer: { displayName: string; email: string; username: string };
   post: { title: string };
 }
 

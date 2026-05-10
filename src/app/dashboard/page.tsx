@@ -52,6 +52,7 @@ export default function DashboardOverview() {
         if (!res.ok) throw new Error("Failed to fetch stats");
 
         const data = await res.json();
+        data.totalNeighbos = (data.totalFollowers || 0) + (data.totalFollowing || 0);
         setStats(data);
       } catch (e) {
         toast.error("Could not load dashboard stats");
