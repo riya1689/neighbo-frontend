@@ -9,9 +9,10 @@ interface Payment {
   amount: number;
   status: string;
   transactionId: string;
-  paymentMethod: string;
   createdAt: string;
   user: { displayName: string; email: string };
+  planName: string;
+  planDuration: string;
   invoice: { invoiceNumber: string } | null;
 }
 
@@ -58,7 +59,8 @@ export default function PaymentOverview() {
               <tr className="bg-slate-50 border-b border-slate-200">
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Transaction ID</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Method</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Premium Plan</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Duration</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Amount</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
@@ -68,11 +70,11 @@ export default function PaymentOverview() {
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-slate-400">Loading payments...</td>
+                  <td colSpan={8} className="px-6 py-8 text-center text-slate-400">Loading payments...</td>
                 </tr>
               ) : payments.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-slate-400">No transactions recorded</td>
+                  <td colSpan={8} className="px-6 py-8 text-center text-slate-400">No transactions recorded</td>
                 </tr>
               ) : (
                 payments.map((p) => (
@@ -88,20 +90,23 @@ export default function PaymentOverview() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-slate-600">
-                        <CreditCard size={14} className="text-slate-400" />
-                        <span className="text-xs font-bold uppercase">{p.paymentMethod}</span>
+                        <CreditCard size={14} className="text-primary" />
+                        <span className="text-xs font-bold uppercase">{p.planName}</span>
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs font-bold text-slate-500">{p.planDuration}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="font-bold text-slate-800">৳{p.amount.toLocaleString()}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full w-fit text-xs font-bold ${
+                      <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full w-fit text-[10px] font-bold ${
                         p.status === "COMPLETED" ? "bg-green-100 text-green-600" : 
                         p.status === "PENDING" ? "bg-yellow-100 text-yellow-600" : "bg-red-100 text-red-600"
                       }`}>
-                        {p.status === "COMPLETED" ? <CheckCircle size={12} /> : 
-                         p.status === "PENDING" ? <Clock size={12} /> : <XCircle size={12} />}
+                        {p.status === "COMPLETED" ? <CheckCircle size={10} /> : 
+                         p.status === "PENDING" ? <Clock size={10} /> : <XCircle size={10} />}
                         {p.status}
                       </div>
                     </td>
@@ -109,10 +114,10 @@ export default function PaymentOverview() {
                       {new Date(p.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
-                      {p.invoice ? (
+                      {p.invoice?.invoiceNumber !== "N/A" ? (
                         <button className="flex items-center gap-2 text-primary hover:text-primary-dark font-bold text-xs group transition-all">
                           <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
-                          {p.invoice.invoiceNumber}
+                          {p.invoice?.invoiceNumber}
                         </button>
                       ) : (
                         <span className="text-slate-400 text-xs italic">N/A</span>
