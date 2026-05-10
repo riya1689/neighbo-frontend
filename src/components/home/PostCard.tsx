@@ -49,7 +49,8 @@ interface Comment {
   replies?: Comment[];
 }
 
-export default function PostCard({ post }: PostProps) {
+export default function PostCard({ post: initialPost }: PostProps) {
+  const [post, setPost] = useState(initialPost);
   const [netVotes, setNetVotes] = useState(post.netVotes || 0);
   const [userVote, setUserVote] = useState<string | null>(post.userVote || null);
   const [showComments, setShowComments] = useState(false);
@@ -63,8 +64,10 @@ export default function PostCard({ post }: PostProps) {
   const currentUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
   const isOwner = currentUser?.id === (post as any).userId;
   const isLocked = post.isPremium && post.unlockPrice && !post.isUnlocked && !isOwner;
+  const isDeleted = (post as any).isDeleted === true;
 
   const handleUnlock = async () => {
+    if (isDeleted) return;
     const token = localStorage.getItem('token');
     if (!token) {
       toast.error('Please login to unlock this post.');
@@ -92,6 +95,7 @@ export default function PostCard({ post }: PostProps) {
   };
 
   const handleVote = async (type: "UPVOTE" | "DOWNVOTE") => {
+    if (isDeleted) return;
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -120,6 +124,7 @@ export default function PostCard({ post }: PostProps) {
   };
 
   const fetchComments = async () => {
+    if (isDeleted) return;
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       const res = await fetch(`${apiUrl}/comments/${post.id}`);
@@ -131,6 +136,7 @@ export default function PostCard({ post }: PostProps) {
   };
 
   const handleAddComment = async (parentId: string | null = null) => {
+    if (isDeleted) return;
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -162,6 +168,7 @@ export default function PostCard({ post }: PostProps) {
   };
 
   const handleShare = async () => {
+    if (isDeleted) return;
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -195,13 +202,13 @@ export default function PostCard({ post }: PostProps) {
 
 
   useEffect(() => {
-    if (showComments) {
+    if (showComments && !isDeleted) {
       fetchComments();
     }
-  }, [showComments]);
+  }, [showComments, isDeleted]);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all hover:shadow-md">
+    <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all hover:shadow-md ${isDeleted ? 'opacity-80' : ''}`}>
       {post.sharedBy && (
         <div className="bg-slate-50 px-5 py-2 flex items-center gap-2 border-b border-slate-100 text-xs text-slate-500 font-medium">
           <Share2 size={14} className="text-primary" />
@@ -228,7 +235,7 @@ export default function PostCard({ post }: PostProps) {
             </div>
           </div>
         </div>
-        <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-full transition">
+        <button className="p-2 text-slate-400 hover:bg-slate-50 rounded-full transition" disabled={isDeleted}>
           <MoreHorizontal size={20} />
         </button>
       </div>
@@ -237,7 +244,11 @@ export default function PostCard({ post }: PostProps) {
       <div className="px-5 pb-4 space-y-4">
         <div>
           <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">{post.title}</h3>
-          {isLocked ? (
+          {isDeleted ? (
+             <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-center">
+                <p className="text-sm text-slate-400 font-bold italic italic-mono">"This post is now unavailable"</p>
+             </div>
+          ) : isLocked ? (
             <div className="relative">
               <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap blur-sm select-none">
                 {post.content.slice(0, 200)}...
@@ -266,24 +277,26 @@ export default function PostCard({ post }: PostProps) {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-primary/5 text-primary rounded-full text-xs font-bold border border-primary/10">
-            <Tag size={12} />
-            {post.category.name}
-          </div>
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-slate-500 rounded-full text-xs font-bold border border-slate-100">
-            <MapPin size={12} className="text-slate-400" />
-            {post.neighborhood.name}
-          </div>
-          {post.isPremium && (
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-bold border border-amber-100">
-              <Lock size={12} />
-              {post.unlockPrice ? `৳${post.unlockPrice} BDT` : 'Premium'}
+        {!isDeleted && (
+          <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-primary/5 text-primary rounded-full text-xs font-bold border border-primary/10">
+              <Tag size={12} />
+              {post.category.name}
             </div>
-          )}
-        </div>
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 text-slate-500 rounded-full text-xs font-bold border border-slate-100">
+              <MapPin size={12} className="text-slate-400" />
+              {post.neighborhood.name}
+            </div>
+            {post.isPremium && (
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-bold border border-amber-100">
+                <Lock size={12} />
+                {post.unlockPrice ? `৳${post.unlockPrice} BDT` : 'Premium'}
+              </div>
+            )}
+          </div>
+        )}
 
-        {!isLocked && post.images && post.images.length > 0 && (
+        {!isDeleted && !isLocked && post.images && post.images.length > 0 && (
           <div className="rounded-2xl overflow-hidden border border-slate-100 mt-2">
             <img 
               src={post.images[0]} 
@@ -296,12 +309,13 @@ export default function PostCard({ post }: PostProps) {
       </div>
 
       {/* Post Footer - Engagement */}
-      <div className="px-5 py-3 border-t border-slate-50 flex items-center justify-between bg-slate-50/30">
+      <div className={`px-5 py-3 border-t border-slate-50 flex items-center justify-between ${isDeleted ? 'bg-slate-100/30 grayscale pointer-events-none' : 'bg-slate-50/30'}`}>
         <div className="flex items-center gap-4">
           <div className="flex items-center bg-white border border-slate-100 rounded-xl px-1 shadow-sm">
             <button 
               onClick={() => handleVote("UPVOTE")}
               className={`p-2 transition-colors ${userVote === "UPVOTE" ? "text-primary scale-110" : "text-slate-400 hover:text-primary"}`}
+              disabled={isDeleted}
             >
               <ArrowBigUp size={24} fill={userVote === "UPVOTE" ? "currentColor" : "none"} />
             </button>
@@ -311,6 +325,7 @@ export default function PostCard({ post }: PostProps) {
             <button 
               onClick={() => handleVote("DOWNVOTE")}
               className={`p-2 transition-colors ${userVote === "DOWNVOTE" ? "text-red-500 scale-110" : "text-slate-400 hover:text-red-500"}`}
+              disabled={isDeleted}
             >
               <ArrowBigDown size={24} fill={userVote === "DOWNVOTE" ? "currentColor" : "none"} />
             </button>
@@ -319,6 +334,7 @@ export default function PostCard({ post }: PostProps) {
           <button 
             onClick={() => setShowComments(!showComments)}
             className={`flex items-center gap-2 transition group ${showComments ? "text-primary" : "text-slate-400 hover:text-primary"}`}
+            disabled={isDeleted}
           >
             <div className={`p-2 rounded-xl transition ${showComments ? "bg-primary/10" : "bg-white border border-slate-100 group-hover:bg-primary/5 group-hover:border-primary/10"}`}>
               <MessageSquare size={20} />
@@ -330,6 +346,7 @@ export default function PostCard({ post }: PostProps) {
         <button 
           onClick={handleShare}
           className="flex items-center gap-2 text-slate-400 hover:text-primary transition group"
+          disabled={isDeleted}
         >
           <div className="p-2 bg-white border border-slate-100 group-hover:bg-primary/5 rounded-xl transition group-hover:border-primary/10">
             <Share2 size={20} />
@@ -339,7 +356,7 @@ export default function PostCard({ post }: PostProps) {
       </div>
 
       {/* Comment Section */}
-      {showComments && (
+      {showComments && !isDeleted && (
         <div className="px-5 py-5 bg-slate-50/50 border-t border-slate-100">
           {/* Add Comment Input */}
           <div className="flex gap-3 mb-6">

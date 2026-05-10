@@ -2,10 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { 
-  FileText, 
   Trash2, 
   Edit, 
-  PlusCircle, 
   Search,
   MessageSquare,
   ArrowUpRight,
@@ -13,7 +11,9 @@ import {
   CheckCircle2,
   Lock,
   Globe,
-  ImageIcon
+  Share2,
+  ThumbsUp,
+  BarChart3
 } from "lucide-react";
 import toast from "react-hot-toast";
 import CreatePost from "@/components/home/CreatePost";
@@ -24,9 +24,13 @@ interface Post {
   content: string;
   createdAt: string;
   isPremium: boolean;
-  unlockPrice: number | null;
+  isDeleted: boolean;
   category: { name: string };
-  neighborhood: { name: string };
+  _count: {
+    comments: number;
+    votes: number;
+    shares: number;
+  };
 }
 
 export default function PostManagement() {
@@ -35,15 +39,12 @@ export default function PostManagement() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [editLoading, setEditLoading] = useState(false);
-
-  // Edit form state
   const [editTitle, setEditTitle] = useState("");
-  const [editContent, setEditContent] = useState("");
 
   const fetchPosts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
       const res = await fetch(`${apiUrl}/dashboard/posts`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -63,19 +64,19 @@ export default function PostManagement() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
+    if (!confirm("Are you sure you want to delete this post? This will make it unavailable on the feed.")) return;
 
     try {
       const token = localStorage.getItem("token");
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
       const res = await fetch(`${apiUrl}/posts/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (res.ok) {
-        toast.success("Post deleted successfully");
-        setPosts(posts.filter(p => p.id !== id));
+        toast.success("Post deleted successfully (Soft Deleted)");
+        fetchPosts(); // Refresh to see state
       } else {
         toast.error("Failed to delete post");
       }
@@ -87,7 +88,6 @@ export default function PostManagement() {
   const handleEditOpen = (post: Post) => {
     setEditingPost(post);
     setEditTitle(post.title);
-    setEditContent(post.content);
     setIsEditing(true);
   };
 
@@ -98,7 +98,7 @@ export default function PostManagement() {
     setEditLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();
       const res = await fetch(`${apiUrl}/posts/${editingPost.id}`, {
         method: "PATCH",
         headers: { 
@@ -106,15 +106,14 @@ export default function PostManagement() {
           Authorization: `Bearer ${token}` 
         },
         body: JSON.stringify({
-          title: editTitle,
-          content: editContent
+          title: editTitle
         })
       });
 
       if (res.ok) {
-        toast.success("Post updated successfully!");
+        toast.success("Title updated successfully!");
         setIsEditing(false);
-        fetchPosts(); // Refresh list
+        fetchPosts();
       } else {
         toast.error("Failed to update post");
       }
@@ -127,39 +126,38 @@ export default function PostManagement() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800 font-poppins tracking-tight">Post Management</h1>
-          <p className="text-slate-500 mt-1">Manage your contributions to the community.</p>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold text-slate-800 font-poppins tracking-tight">Post Management</h1>
+        <p className="text-slate-500 mt-1">Manage and track your content performance.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-         <div className="md:col-span-1 space-y-8">
-            <div className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">My Contributions</p>
-               <div className="flex items-end gap-3">
-                  <h2 className="text-5xl font-bold text-slate-800">{posts.length}</h2>
-                  <span className="text-slate-400 font-bold mb-1.5 uppercase text-[10px]">Total Posts</span>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+         <div className="lg:col-span-1">
+            <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm sticky top-28">
+               <h3 className="font-bold text-slate-800 mb-6 text-center">Creator Hub</h3>
+               <div className="relative">
+                  <CreatePost />
                </div>
-               <div className="h-2 w-full bg-slate-50 rounded-full mt-6 overflow-hidden">
-                  <div className="h-full bg-primary rounded-full" style={{ width: '75%' }}></div>
+               <div className="mt-8 pt-8 border-t border-slate-50">
+                  <div className="flex items-center justify-between mb-4">
+                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Posts</span>
+                     <span className="text-sm font-bold text-primary">{posts.filter(p => !p.isDeleted).length}</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                     <div className="h-full bg-primary" style={{ width: '85%' }}></div>
+                  </div>
                </div>
-            </div>
-
-            <div className="bg-white p-2 rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-               <CreatePost />
             </div>
          </div>
 
-         <div className="md:col-span-2 space-y-6">
+         <div className="lg:col-span-3 space-y-6">
             <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
                <div className="p-8 border-b border-slate-50 flex items-center justify-between">
-                  <h3 className="font-bold text-slate-800 font-poppins">All Posts</h3>
+                  <h3 className="font-bold text-slate-800 font-poppins text-lg">My All Posts</h3>
                   <div className="relative">
                      <input 
                        type="text" 
-                       placeholder="Search your posts..." 
+                       placeholder="Filter by title..." 
                        className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 ring-primary/20 outline-none w-64"
                      />
                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -168,46 +166,81 @@ export default function PostManagement() {
 
                <div className="divide-y divide-slate-50">
                   {loading ? (
-                    <div className="p-12 text-center text-slate-400 font-medium">Loading your posts...</div>
+                    <div className="p-12 text-center text-slate-400 font-medium italic">Scanning neighborhood archive...</div>
                   ) : posts.length === 0 ? (
                     <div className="p-12 text-center text-slate-400 font-medium">You haven't shared any posts yet.</div>
                   ) : (
                     posts.map((post) => (
                       <div key={post.id} className="p-8 hover:bg-slate-50/50 transition-colors group">
                          <div className="flex justify-between items-start">
-                            <div className="space-y-3 flex-1">
+                            <div className="space-y-4 flex-1">
                                <div className="flex items-center gap-3">
-                                  <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full uppercase tracking-wider">{post.category.name}</span>
-                                  <div className="flex items-center gap-1.5 text-slate-400 font-bold text-[10px] uppercase">
-                                     {post.isPremium ? <Lock size={12} className="text-amber-500" /> : <Globe size={12} />}
-                                     {post.isPremium ? "Premium" : "Public"}
-                                  </div>
+                                  <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full uppercase tracking-wider">
+                                     {post.category.name}
+                                  </span>
+                                  {post.isPremium && (
+                                     <div className="flex items-center gap-1 text-amber-500 font-bold text-[10px] uppercase">
+                                        <Lock size={12} />
+                                        <span>Premium</span>
+                                     </div>
+                                  )}
                                </div>
-                               <h4 className="text-xl font-bold text-slate-800 group-hover:text-primary transition-colors">{post.title}</h4>
-                               <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed">{post.content}</p>
+                               <div>
+                                  <h4 className={`text-xl font-bold transition-colors ${post.isDeleted ? 'text-slate-400 line-through' : 'text-slate-800 group-hover:text-primary'}`}>
+                                     {post.title}
+                                  </h4>
+                                  {post.isDeleted && <p className="text-[10px] text-accent-red font-bold uppercase mt-1">Status: Soft Deleted</p>}
+                               </div>
+                               
                                <div className="flex items-center gap-6 pt-2">
-                                  <div className="flex items-center gap-1.5 text-slate-400 font-bold text-[10px] uppercase">
-                                     <CheckCircle2 size={14} className="text-slate-300" />
-                                     <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                                  <div className="flex flex-col items-center gap-1">
+                                     <div className="flex items-center gap-1.5 text-slate-400 font-bold text-xs">
+                                        <MessageSquare size={14} className="text-slate-300" />
+                                        <span>{post._count.comments}</span>
+                                     </div>
+                                     <span className="text-[8px] text-slate-300 uppercase font-bold tracking-tighter">Comments</span>
                                   </div>
-                                  <div className="flex items-center gap-1.5 text-slate-400 font-bold text-[10px] uppercase">
-                                     <MessageSquare size={14} className="text-slate-300" />
-                                     <span>12 Comments</span>
+
+                                  <div className="flex flex-col items-center gap-1">
+                                     <div className="flex items-center gap-1.5 text-slate-400 font-bold text-xs">
+                                        <ThumbsUp size={14} className="text-slate-300" />
+                                        <span>{post._count.votes}</span>
+                                     </div>
+                                     <span className="text-[8px] text-slate-300 uppercase font-bold tracking-tighter">Votes</span>
+                                  </div>
+
+                                  <div className="flex flex-col items-center gap-1">
+                                     <div className="flex items-center gap-1.5 text-slate-400 font-bold text-xs">
+                                        <Share2 size={14} className="text-slate-300" />
+                                        <span>{post._count.shares}</span>
+                                     </div>
+                                     <span className="text-[8px] text-slate-300 uppercase font-bold tracking-tighter">Shares</span>
+                                  </div>
+
+                                  <div className="h-8 w-[1px] bg-slate-100 mx-2"></div>
+
+                                  <div className="flex flex-col items-start gap-1">
+                                     <span className="text-[8px] text-slate-300 uppercase font-bold tracking-tighter">Published On</span>
+                                     <span className="text-[10px] text-slate-500 font-bold">{new Date(post.createdAt).toLocaleDateString()}</span>
                                   </div>
                                </div>
                             </div>
+                            
                             <div className="flex items-center gap-2">
-                               <button 
-                                 onClick={() => handleEditOpen(post)}
-                                 className="p-3 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-2xl transition-all"
-                                 title="Edit Post"
-                               >
-                                  <Edit size={20} />
-                               </button>
+                               {!post.isDeleted && (
+                                  <button 
+                                    onClick={() => handleEditOpen(post)}
+                                    className="p-3 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-2xl transition-all"
+                                    title="Edit Title"
+                                  >
+                                     <Edit size={20} />
+                                  </button>
+                               )}
                                <button 
                                  onClick={() => handleDelete(post.id)}
-                                 className="p-3 text-slate-400 hover:text-accent-red hover:bg-accent-red/5 rounded-2xl transition-all"
-                                 title="Delete Post"
+                                 className={`p-3 transition-all rounded-2xl ${post.isDeleted ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:text-accent-red hover:bg-accent-red/5'}`}
+                                 disabled={post.isDeleted}
+                                 title="Soft Delete"
                                >
                                   <Trash2 size={20} />
                                </button>
@@ -221,12 +254,12 @@ export default function PostManagement() {
          </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Edit Title Modal */}
       {isEditing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
            <div className="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 animate-in zoom-in-95 duration-300">
              <div className="flex items-center justify-between p-6 border-b border-slate-100">
-               <h2 className="text-xl font-bold text-slate-800 font-poppins">Edit Post</h2>
+               <h2 className="text-xl font-bold text-slate-800 font-poppins">Update Post Title</h2>
                <button 
                  onClick={() => setIsEditing(false)}
                  className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition"
@@ -237,25 +270,16 @@ export default function PostManagement() {
 
              <form onSubmit={handleUpdate} className="p-6 space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Post Title</label>
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">New Title</label>
                   <input 
                     type="text" 
-                    placeholder="Title" 
+                    placeholder="Enter catchy title..." 
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
                     className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all font-medium"
+                    required
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Description</label>
-                  <textarea 
-                    placeholder="Content" 
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    rows={6}
-                    className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-2 ring-primary/20 focus:border-primary outline-none transition-all font-medium resize-none"
-                  />
+                  <p className="text-[10px] text-slate-400 px-1">Only the title can be updated here for quick adjustments.</p>
                 </div>
 
                 <div className="flex gap-4 pt-4">
@@ -274,7 +298,7 @@ export default function PostManagement() {
                     {editLoading ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                      <>Save Changes <CheckCircle2 size={18} /></>
+                      <>Update Title <CheckCircle2 size={18} /></>
                     )}
                   </button>
                 </div>

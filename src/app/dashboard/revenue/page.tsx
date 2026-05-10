@@ -126,7 +126,7 @@ export default function RevenueOverview() {
                     <td className="px-8 py-5">
                       <div>
                         <p className="font-bold text-slate-800 text-sm">{t.payer.displayName}</p>
-                        <p className="text-[10px] text-slate-400 font-medium">{t.payer.email}</p>
+                        <p className="text-[10px] text-primary font-bold">@{t.payer.username}</p>
                       </div>
                     </td>
                     <td className="px-8 py-5">

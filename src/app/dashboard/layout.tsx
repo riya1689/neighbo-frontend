@@ -48,7 +48,12 @@ export default function DashboardLayout({
   const navItems = [
     { name: "Overview", icon: <LayoutDashboard size={20} />, href: "/dashboard" },
     { name: "Revenue Overview", icon: <History size={20} />, href: "/dashboard/revenue" },
+    { name: "Followers List", icon: <History size={20} />, href: "/dashboard/followers" },
+    { name: "Followings List", icon: <History size={20} />, href: "/dashboard/following" },
+    { name: "Neighbos", icon: <History size={20} />, href: "/dashboard/neighbos" },
+    { name: "Premium Content Purchases", icon: <History size={20} />, href: "/dashboard/purchases" },
     { name: "Post Management", icon: <FileText size={20} />, href: "/dashboard/posts" },
+    { name: "My Premium Plans", icon: <History size={20} />, href: "/dashboard/plans" },
   ];
 
   return (
