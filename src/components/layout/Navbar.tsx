@@ -150,10 +150,9 @@ export default function Navbar() {
             <Link href="/" className={`${pathname === "/" ? "text-primary border-b-2 border-primary" : "hover:text-primary transition"}`}>Home</Link>
             <Link href="/explore" className={`${pathname.includes("/explore") ? "text-primary border-b-2 border-primary" : "hover:text-primary transition"}`}>Explore</Link>
             <Link href="/categories" className={`${pathname.includes("/categories") ? "text-primary border-b-2 border-primary" : "hover:text-primary transition"}`}>Category</Link>
-            <Link href="/ai" className="flex items-center gap-1 hover:text-primary transition group relative">
-              <Sparkles size={14} className="text-purple-500 group-hover:animate-pulse" />
+            <Link href="/ai" className={`${pathname === "/ai" ? "text-primary border-b-2 border-primary" : "hover:text-primary transition"} flex items-center gap-1`}>
+              <Sparkles size={14} className="text-purple-500" />
               <span>Neighbo AI</span>
-              <span className="text-[8px] font-black uppercase bg-slate-100 text-slate-400 px-1 py-0.5 rounded ml-1">Soon</span>
             </Link>
           </div>
         </div>

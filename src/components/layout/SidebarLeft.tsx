@@ -46,7 +46,7 @@ export default function SidebarLeft() {
   const menuItems = [
     { name: "Home", icon: <Home size={20} />, href: "/" },
     { name: "Premium Plan", icon: <Gem size={20} />, href: "/premium" },
-    { name: "Neighbo AI", icon: <Sparkles size={20} className="text-purple-500" />, href: "/ai", comingSoon: true },
+    { name: "Neighbo AI", icon: <Sparkles size={20} className="text-purple-500" />, href: "/ai" },
     { 
       name: "Explore", 
       icon: <Compass size={20} />, 
