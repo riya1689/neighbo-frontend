@@ -108,9 +108,6 @@ export default function SidebarLeft() {
                       {item.icon}
                       <span>{item.name}</span>
                     </div>
-                    {item.comingSoon && (
-                      <span className="text-[8px] font-black uppercase bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded">Soon</span>
-                    )}
                   </div>
                 </Link>
               )}
