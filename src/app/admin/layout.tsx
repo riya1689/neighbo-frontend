@@ -11,9 +11,12 @@ import {
   CreditCard, 
   History, 
   LogOut, 
-  ShieldCheck 
+  ShieldCheck,
+  Menu,
+  X
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminLayout({
   children,
@@ -24,6 +27,7 @@ export default function AdminLayout({
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const userStr = localStorage.getItem("user");
@@ -48,6 +52,11 @@ export default function AdminLayout({
     }
   }, [router]);
 
+  // Close sidebar on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   if (loading) return <div className="h-screen flex items-center justify-center text-primary font-bold">Checking permissions...</div>;
   if (!isAdmin) return null;
 
@@ -70,9 +79,14 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Top Navbar */}
-      <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 fixed top-0 w-full z-20 shadow-xs">
-        <div className="flex-1">
-          {/* Placeholder for left spacing if needed */}
+      <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 fixed top-0 w-full z-30 shadow-xs">
+        <div className="flex-1 flex items-center">
+           <button 
+             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+             className="p-2 mr-2 text-slate-500 hover:bg-slate-100 rounded-xl lg:hidden transition-all"
+           >
+             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+           </button>
         </div>
         
         <div className="flex-1 flex justify-center">
@@ -82,7 +96,7 @@ export default function AdminLayout({
         </div>
 
         <div className="flex-1 flex justify-end items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full hidden sm:flex">
             <LayoutDashboard size={16} className="text-slate-400" />
             <span className="text-sm font-bold text-slate-700">Hi, Admin</span>
           </div>
@@ -96,9 +110,26 @@ export default function AdminLayout({
         </div>
       </header>
 
-      <div className="flex pt-16">
+      <div className="flex pt-16 relative">
+        {/* Mobile Sidebar Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-20 lg:hidden"
+            />
+          )}
+        </AnimatePresence>
+
         {/* Sidebar */}
-        <aside className="w-64 bg-[#0F172A] text-white flex flex-col fixed h-[calc(100vh-64px)] z-10">
+        <aside className={`
+          w-64 bg-[#0F172A] text-white flex flex-col fixed h-[calc(100vh-64px)] z-20
+          transition-transform duration-300 ease-in-out lg:translate-x-0
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}>
           <div className="p-6 flex items-center gap-3 border-b border-slate-700/50">
             <div className="bg-primary p-2 rounded-lg">
               <ShieldCheck size={24} className="text-white" />
@@ -106,7 +137,7 @@ export default function AdminLayout({
             <span className="font-poppins font-bold text-xl tracking-tight text-white">Admin Panel</span>
           </div>
 
-          <nav className="flex-1 mt-6 px-3 space-y-1">
+          <nav className="flex-1 mt-6 px-3 space-y-1 overflow-y-auto custom-scrollbar">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -128,7 +159,7 @@ export default function AdminLayout({
             })}
           </nav>
 
-          <div className="p-4 border-t border-slate-700/50">
+          <div className="p-4 border-t border-slate-700/50 mt-auto">
             <button 
               onClick={handleLogout}
               className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
@@ -140,7 +171,7 @@ export default function AdminLayout({
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 ml-64 p-8">
+        <main className="flex-1 lg:ml-64 p-4 md:p-8 w-full">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {children}
           </div>

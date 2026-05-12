@@ -126,14 +126,12 @@ export default function DashboardOverview() {
         </div>
         <div className="flex gap-3">
            <Link href="/dashboard/posts">
-            <button className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+            <button className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-sm hidden md:flex">
                <Eye size={18} />
                View Posts
             </button>
            </Link>
-           <div className="relative group">
-              <CreatePost />
-           </div>
+           <CreatePost asButton={true} buttonText="Create Post" />
         </div>
       </div>
 
@@ -152,7 +150,7 @@ export default function DashboardOverview() {
         ))}
       </div>
 
-      <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+      <div className="bg-white p-6 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
         <div className="flex items-center gap-3 mb-10">
           <div className="p-3 bg-primary/10 rounded-2xl text-primary">
             <Zap size={24} fill="currentColor" />
@@ -166,19 +164,18 @@ export default function DashboardOverview() {
                  The CreatePost component has its own UI. User said "add create post link ... dont change ui design". 
                  I'll make the card itself act as a trigger or contain the button. 
              */}
-             <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-primary/20 hover:bg-primary/[0.02] transition-all cursor-pointer group">
-                <div className="flex items-start justify-between mb-4">
-                   <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                     <FileText size={28} className="text-primary" />
-                   </div>
-                   <ArrowUpRight size={24} className="text-slate-300 group-hover:text-primary transition-colors" />
-                </div>
-                <h4 className="text-xl font-bold text-slate-800 mb-2">Create Premium Content</h4>
-                <p className="text-sm text-slate-500 leading-relaxed mb-4">Monetize your knowledge by sharing exclusive insights with your neighbors.</p>
-                <div className="w-full opacity-0 absolute inset-0">
-                   <CreatePost />
-                </div>
-             </div>
+             <Link href="/dashboard/neighbos">
+            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all cursor-pointer group h-full">
+               <div className="flex items-start justify-between mb-4">
+                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    <Users size={28} className="text-blue-500" />
+                  </div>
+                  <ArrowUpRight size={24} className="text-slate-300 group-hover:text-blue-500 transition-colors" />
+               </div>
+               <h4 className="text-xl font-bold text-slate-800 mb-2">My Neighbos</h4>
+               <p className="text-sm text-slate-500 leading-relaxed">Connecting neighbos make more strong and happy.</p>
+            </div>
+          </Link>
           </div>
 
           <Link href="/dashboard/plans">

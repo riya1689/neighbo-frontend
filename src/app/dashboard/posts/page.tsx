@@ -130,26 +130,11 @@ export default function PostManagement() {
         <h1 className="text-3xl font-bold text-slate-800 font-poppins tracking-tight">Post Management</h1>
         <p className="text-slate-500 mt-1">Manage and track your content performance.</p>
       </div>
+      <div className="flex gap-3">
+             <CreatePost asButton={true} buttonText="Create Post" />
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-         <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm sticky top-28">
-               <h3 className="font-bold text-slate-800 mb-6 text-center">Creator Hub</h3>
-               <div className="relative">
-                  <CreatePost />
-               </div>
-               <div className="mt-8 pt-8 border-t border-slate-50">
-                  <div className="flex items-center justify-between mb-4">
-                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Posts</span>
-                     <span className="text-sm font-bold text-primary">{posts.filter(p => !p.isDeleted).length}</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                     <div className="h-full bg-primary" style={{ width: '85%' }}></div>
-                  </div>
-               </div>
-            </div>
-         </div>
-
          <div className="lg:col-span-3 space-y-6">
             <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
                <div className="p-8 border-b border-slate-50 flex items-center justify-between">

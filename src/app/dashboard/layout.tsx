@@ -11,9 +11,12 @@ import {
   UserCircle,
   ChevronRight,
   Mail,
-  AtSign
+  AtSign,
+  Menu,
+  X
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function DashboardLayout({
   children,
@@ -24,6 +27,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const userStr = localStorage.getItem("user");
@@ -42,6 +46,11 @@ export default function DashboardLayout({
     }
   }, [router]);
 
+  // Close sidebar on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   if (loading) return <div className="h-screen flex items-center justify-center text-primary font-bold">Loading dashboard...</div>;
   if (!user) return null;
 
@@ -59,14 +68,20 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Top Navbar */}
-      <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 fixed top-0 w-full z-20 shadow-sm">
+      <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 fixed top-0 w-full z-30 shadow-sm">
         <div className="flex items-center gap-2">
+           <button 
+             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+             className="p-2 mr-2 text-slate-500 hover:bg-slate-100 rounded-xl lg:hidden transition-all"
+           >
+             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+           </button>
            <Link href="/" className="flex items-center gap-2">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">N</div>
-            <span className="font-poppins font-bold text-2xl text-primary tracking-tight hidden md:block">Neighbo</span>
+            <span className="font-poppins font-bold text-2xl text-primary tracking-tight hidden sm:block">Neighbo</span>
           </Link>
-          <div className="h-6 w-[1px] bg-slate-200 mx-4 hidden md:block"></div>
-          <span className="text-sm font-bold text-slate-400 uppercase tracking-widest hidden md:block">My Dashboard</span>
+          <div className="h-6 w-[1px] bg-slate-200 mx-4 hidden lg:block"></div>
+          <span className="text-sm font-bold text-slate-400 uppercase tracking-widest hidden lg:block">My Dashboard</span>
         </div>
         
         <div className="flex items-center gap-6">
@@ -89,10 +104,27 @@ export default function DashboardLayout({
         </div>
       </header>
 
-      <div className="flex pt-20">
+      <div className="flex pt-20 relative">
+        {/* Mobile Sidebar Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-20 lg:hidden"
+            />
+          )}
+        </AnimatePresence>
+
         {/* Sidebar */}
-        <aside className="w-72 bg-white border-r border-slate-200 flex flex-col fixed h-[calc(100vh-80px)] z-10 p-6">
-          <nav className="flex-1 space-y-2">
+        <aside className={`
+          w-72 bg-white border-r border-slate-200 flex flex-col fixed h-[calc(100vh-80px)] z-20 p-6
+          transition-transform duration-300 ease-in-out lg:translate-x-0
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}>
+          <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar pr-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -117,7 +149,7 @@ export default function DashboardLayout({
             })}
           </nav>
 
-          <div className="pt-6 border-t border-slate-100">
+          <div className="pt-6 border-t border-slate-100 mt-auto">
             <button 
               onClick={() => {
                 localStorage.removeItem("token");
@@ -133,7 +165,7 @@ export default function DashboardLayout({
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 ml-72 p-8 min-h-[calc(100vh-80px)]">
+        <main className="flex-1 lg:ml-72 p-4 md:p-8 min-h-[calc(100vh-80px)] w-full">
            {children}
         </main>
       </div>
