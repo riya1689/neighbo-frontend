@@ -1,17 +1,8 @@
 import type { Metadata } from "next";
-import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins", // This matches the CSS variable in globals.css
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter", // This matches the CSS variable in globals.css
-});
+const poppinsVariable = "font-poppins"; 
+const interVariable = "font-inter";
 
 export const metadata: Metadata = {
   title: "Neighbo - Building Better Neighborhoods",
@@ -27,7 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} ${inter.variable} antialiased`}>
+      <body className={`antialiased`} style={{ 
+        fontFamily: "'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+      }}>
         <Toaster 
           position="top-center" 
           reverseOrder={false} 
