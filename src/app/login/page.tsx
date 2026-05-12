@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { API_URL } from "@/config/api";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -61,6 +62,19 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold font-poppins text-primary">Neighbo</h1>
           <p className="text-dark-text opacity-70 mt-2">Welcome back! Please login to your account.</p>
+        </div>
+
+        <GoogleLoginButton label="Sign in with Google" />
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-soft-gray"></div>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-2 text-dark-text opacity-50 font-medium tracking-wider">
+              Or continue with email
+            </span>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
