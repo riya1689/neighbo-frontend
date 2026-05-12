@@ -201,9 +201,9 @@ export default function AIProjectPage() {
                           ? "bg-primary text-white rounded-tr-none font-medium" 
                           : "bg-slate-50 text-slate-800 rounded-tl-none border border-slate-100"
                       }`}>
-                        <ReactMarkdown className="markdown-content prose prose-sm max-w-none">
-                          {msg.parts[0].text}
-                        </ReactMarkdown>
+                        <div className="markdown-content prose prose-sm max-w-none">
+                          <ReactMarkdown>{msg.parts[0].text}</ReactMarkdown>
+                        </div>
                         <span className={`text-[9px] mt-2 block opacity-50 ${msg.role === "user" ? "text-white text-right" : "text-slate-500 text-left"}`}>
                           {msg.createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
