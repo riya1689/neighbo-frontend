@@ -19,11 +19,13 @@ import {
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import InviteModal from "../common/InviteModal";
 
 export default function SidebarLeft() {
   const pathname = usePathname();
   const [exploreOpen, setExploreOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -135,10 +137,19 @@ export default function SidebarLeft() {
           </p>
         </div>
 
-        <button className="w-full bg-primary text-white font-poppins font-bold py-3 rounded-xl shadow-md hover:bg-primary-dark hover:shadow-primary/20 transition-all">
+        <button 
+          onClick={() => setIsInviteOpen(true)}
+          className="w-full bg-primary text-white font-poppins font-bold py-3 rounded-xl shadow-md hover:bg-primary-dark hover:shadow-primary/20 transition-all"
+        >
           Invite Neighbo
         </button>
       </motion.div>
+
+      {/* Invite Modal */}
+      <InviteModal 
+        isOpen={isInviteOpen} 
+        onClose={() => setIsInviteOpen(false)} 
+      />
     </div>
   );
 }
