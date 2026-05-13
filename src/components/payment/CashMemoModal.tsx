@@ -40,28 +40,54 @@ export default function CashMemoModal({ transaction, onClose }: CashMemoModalPro
   const [copied, setCopied] = useState(false);
 
   const handleDownloadPdf = async () => {
-    if (!memoRef.current) return;
+    const element = document.getElementById("neighbo-invoice-content");
+    if (!element) {
+      toast.error("Invoice content not found.");
+      return;
+    }
+
+    const toastId = toast.loading("Preparing your PDF...");
 
     try {
-      const canvas = await html2canvas(memoRef.current, {
+      // Small delay to ensure all styles are applied and fonts are ready
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
+        logging: true,
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
       });
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const pdf = new jsPDF({
+        orientation: "p",
+        unit: "mm",
+        format: "a4",
+        compress: true
+      });
+
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`neighbo-invoice-${transaction.tranId}.pdf`);
-      toast.success("PDF downloaded successfully!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to generate PDF.");
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+      
+      const fileName = `neighbo-invoice-${transaction.tranId || 'download'}.pdf`;
+      pdf.save(fileName);
+      
+      toast.success("PDF downloaded successfully!", { id: toastId });
+    } catch (err: any) {
+      console.error("PDF Generation Error Detail:", err);
+      toast.error(`Failed to generate PDF: ${err.message || "Unknown error"}`, { id: toastId });
     }
   };
+
+
 
   const handleShareLink = () => {
     const url = `${window.location.origin}/payment/success?tran_id=${transaction.tranId}`;
@@ -96,7 +122,7 @@ export default function CashMemoModal({ transaction, onClose }: CashMemoModalPro
         {/* Scrollable Content */}
         <div className="max-h-[85vh] overflow-y-auto">
           {/* ──── PRINTABLE CASH MEMO ──── */}
-          <div ref={memoRef} className="bg-white p-8">
+          <div ref={memoRef} id="neighbo-invoice-content" className="bg-white p-8">
             {/* Header */}
             <div className="flex items-start justify-between mb-8">
               <div>
