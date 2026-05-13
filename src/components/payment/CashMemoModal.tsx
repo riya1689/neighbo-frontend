@@ -35,6 +35,89 @@ interface CashMemoModalProps {
   onClose: () => void;
 }
 
+// CHANGED: Helper to recursively replace any unsupported CSS color functions
+// (oklab, oklch, lch, lab, color()) with safe fallback colors so html2canvas
+// doesn't crash. We walk every element inside the invoice container, read its
+// computedStyle, and force-set the property as an inline style with a plain
+// rgb/hex value resolved by the browser's own color-parsing.
+function sanitizeColorsForCanvas(root: HTMLElement) {
+  const PROPS = [
+    "color",
+    "backgroundColor",
+    "borderColor",
+    "borderTopColor",
+    "borderRightColor",
+    "borderBottomColor",
+    "borderLeftColor",
+    "outlineColor",
+    "boxShadow",
+  ];
+
+  // Regex that matches any modern color function html2canvas can't parse
+  const UNSUPPORTED = /oklab|oklch|lch\(|lab\(|color\(/i;
+
+  // We create a tiny off-screen element to let the browser convert any color
+  // string to a simple rgb() value.
+  const probe = document.createElement("div");
+  probe.style.display = "none";
+  document.body.appendChild(probe);
+
+  const resolveColor = (value: string): string => {
+    if (!UNSUPPORTED.test(value)) return value; // already safe
+    probe.style.color = value;
+    const resolved = getComputedStyle(probe).color; // browser gives back rgb(...)
+    probe.style.color = "";
+    return resolved || "rgb(0,0,0)";
+  };
+
+  const walk = (el: HTMLElement) => {
+    const cs = getComputedStyle(el);
+    for (const prop of PROPS) {
+      const val = cs[prop as any] as string;
+      if (val && UNSUPPORTED.test(val)) {
+        // boxShadow may contain multiple colors — replace each one
+        if (prop === "boxShadow") {
+          // Simplest safe fallback: just remove box-shadow to avoid crash
+          (el.style as any)[prop] = "none";
+        } else {
+          (el.style as any)[prop] = resolveColor(val);
+        }
+      }
+    }
+    for (const child of Array.from(el.children)) {
+      walk(child as HTMLElement);
+    }
+  };
+
+  walk(root);
+  document.body.removeChild(probe);
+}
+
+// CHANGED: Restore inline styles we forcibly set during capture so the UI
+// looks normal again after the PDF is generated.
+function restoreColors(root: HTMLElement) {
+  const PROPS = [
+    "color",
+    "backgroundColor",
+    "borderColor",
+    "borderTopColor",
+    "borderRightColor",
+    "borderBottomColor",
+    "borderLeftColor",
+    "outlineColor",
+    "boxShadow",
+  ];
+  const restore = (el: HTMLElement) => {
+    for (const prop of PROPS) {
+      (el.style as any)[prop] = "";
+    }
+    for (const child of Array.from(el.children)) {
+      restore(child as HTMLElement);
+    }
+  };
+  restore(root);
+}
+
 export default function CashMemoModal({ transaction, onClose }: CashMemoModalProps) {
   const memoRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
@@ -49,45 +132,54 @@ export default function CashMemoModal({ transaction, onClose }: CashMemoModalPro
     const toastId = toast.loading("Preparing your PDF...");
 
     try {
-      // Small delay to ensure all styles are applied and fonts are ready
       await new Promise(resolve => setTimeout(resolve, 300));
+
+      // CHANGED: Strip all oklab/oklch/lch/lab color functions before capture
+      // so html2canvas doesn't throw "unsupported color function" errors.
+      sanitizeColorsForCanvas(element as HTMLElement);
 
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
-        logging: true,
+        logging: false,        // CHANGED: turned off noisy logging
         allowTaint: true,
         scrollX: 0,
         scrollY: 0,
         windowWidth: element.scrollWidth,
         windowHeight: element.scrollHeight,
+        // CHANGED: onclone lets us sanitize the cloned DOM too, which is what
+        // html2canvas actually renders — double-safety net.
+        onclone: (_doc, clonedEl) => {
+          sanitizeColorsForCanvas(clonedEl as HTMLElement);
+        },
       });
+
+      // CHANGED: Restore original styles on the live DOM after capture
+      restoreColors(element as HTMLElement);
 
       const imgData = canvas.toDataURL("image/png", 1.0);
       const pdf = new jsPDF({
         orientation: "p",
         unit: "mm",
         format: "a4",
-        compress: true
+        compress: true,
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-      
-      const fileName = `neighbo-invoice-${transaction.tranId || 'download'}.pdf`;
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
+
+      const fileName = `neighbo-invoice-${transaction.tranId || "download"}.pdf`;
       pdf.save(fileName);
-      
+
       toast.success("PDF downloaded successfully!", { id: toastId });
     } catch (err: any) {
       console.error("PDF Generation Error Detail:", err);
       toast.error(`Failed to generate PDF: ${err.message || "Unknown error"}`, { id: toastId });
     }
   };
-
-
 
   const handleShareLink = () => {
     const url = `${window.location.origin}/payment/success?tran_id=${transaction.tranId}`;
@@ -280,3 +372,286 @@ export default function CashMemoModal({ transaction, onClose }: CashMemoModalPro
     </div>
   );
 }
+
+// "use client";
+
+// import React, { useRef, useState } from "react";
+// import { X, Download, Link2, CheckCircle2 } from "lucide-react";
+// import html2canvas from "html2canvas";
+// import jsPDF from "jspdf";
+// import toast from "react-hot-toast";
+// import { format } from "date-fns";
+
+// interface TransactionData {
+//   type: "PLAN" | "UNLOCK";
+//   tranId: string;
+//   sslTranId?: string;
+//   planType?: string;
+//   postTitle?: string;
+//   amount: number;
+//   status: string;
+//   paidAt: string;
+//   createdAt: string;
+//   purchaseNo?: number;
+//   buyer: {
+//     displayName: string;
+//     username: string;
+//     email: string;
+//     neighborhood: string;
+//   };
+//   creator?: {
+//     displayName: string;
+//     username: string;
+//   };
+// }
+
+// interface CashMemoModalProps {
+//   transaction: TransactionData;
+//   onClose: () => void;
+// }
+
+// export default function CashMemoModal({ transaction, onClose }: CashMemoModalProps) {
+//   const memoRef = useRef<HTMLDivElement>(null);
+//   const [copied, setCopied] = useState(false);
+
+//   const handleDownloadPdf = async () => {
+//     const element = document.getElementById("neighbo-invoice-content");
+//     if (!element) {
+//       toast.error("Invoice content not found.");
+//       return;
+//     }
+
+//     const toastId = toast.loading("Preparing your PDF...");
+
+//     try {
+//       // Small delay to ensure all styles are applied and fonts are ready
+//       await new Promise(resolve => setTimeout(resolve, 300));
+
+//       const canvas = await html2canvas(element, {
+//         scale: 2,
+//         useCORS: true,
+//         backgroundColor: "#ffffff",
+//         logging: true,
+//         allowTaint: true,
+//         scrollX: 0,
+//         scrollY: 0,
+//         windowWidth: element.scrollWidth,
+//         windowHeight: element.scrollHeight,
+//       });
+
+//       const imgData = canvas.toDataURL("image/png", 1.0);
+//       const pdf = new jsPDF({
+//         orientation: "p",
+//         unit: "mm",
+//         format: "a4",
+//         compress: true
+//       });
+
+//       const pdfWidth = pdf.internal.pageSize.getWidth();
+//       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+//       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+      
+//       const fileName = `neighbo-invoice-${transaction.tranId || 'download'}.pdf`;
+//       pdf.save(fileName);
+      
+//       toast.success("PDF downloaded successfully!", { id: toastId });
+//     } catch (err: any) {
+//       console.error("PDF Generation Error Detail:", err);
+//       toast.error(`Failed to generate PDF: ${err.message || "Unknown error"}`, { id: toastId });
+//     }
+//   };
+
+
+
+//   const handleShareLink = () => {
+//     const url = `${window.location.origin}/payment/success?tran_id=${transaction.tranId}`;
+//     navigator.clipboard.writeText(url).then(() => {
+//       setCopied(true);
+//       toast.success("Invoice link copied to clipboard!");
+//       setTimeout(() => setCopied(false), 3000);
+//     });
+//   };
+
+//   const invoiceNumber = transaction.sslTranId || transaction.tranId.slice(-12).toUpperCase();
+//   const purchaseDate = transaction.paidAt
+//     ? format(new Date(transaction.paidAt), "MMMM dd, yyyy • hh:mm a")
+//     : format(new Date(transaction.createdAt), "MMMM dd, yyyy • hh:mm a");
+
+//   const productLabel = transaction.type === "PLAN" ? "PREMIUM CONTENT" : "CONTENT UNLOCK";
+//   const contentTitle = transaction.type === "PLAN"
+//     ? transaction.planType || "Premium Plan"
+//     : transaction.postTitle || "Premium Post";
+
+//   return (
+//     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+//       <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-300">
+//         {/* Close Button */}
+//         <button
+//           onClick={onClose}
+//           className="absolute top-4 right-4 z-10 p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition"
+//         >
+//           <X size={20} />
+//         </button>
+
+//         {/* Scrollable Content */}
+//         <div className="max-h-[85vh] overflow-y-auto">
+//           {/* ──── PRINTABLE CASH MEMO ──── */}
+//           <div ref={memoRef} id="neighbo-invoice-content" className="bg-white p-8">
+//             {/* Header */}
+//             <div className="flex items-start justify-between mb-8">
+//               <div>
+//                 <div className="flex items-center gap-2 mb-1">
+//                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+//                     <span className="text-primary font-black text-sm">◆</span>
+//                   </div>
+//                   <h1 className="text-2xl font-black text-slate-800 font-poppins">
+//                     Neighbo Invoice
+//                   </h1>
+//                 </div>
+//                 <p className="text-xs text-slate-400 ml-10">
+//                   Connecting communities through modern commerce.
+//                 </p>
+//               </div>
+//               <div className="text-right">
+//                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Invoice Number</p>
+//                 <p className="text-sm font-black text-slate-800 bg-slate-50 px-3 py-1 rounded-lg mt-1 border border-slate-100">
+//                   {invoiceNumber}
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* Divider */}
+//             <div className="h-px bg-slate-100 mb-6" />
+
+//             {/* Buyer & Seller Row */}
+//             <div className="grid grid-cols-2 gap-6 mb-6">
+//               <div>
+//                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Buyer Details</p>
+//                 <p className="font-bold text-slate-800 text-sm">@{transaction.buyer.username}</p>
+//                 <p className="text-xs text-slate-500">{transaction.buyer.email}</p>
+//                 <p className="text-xs text-slate-500">{transaction.buyer.neighborhood}</p>
+//               </div>
+//               <div className="text-right">
+//                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Seller Identity</p>
+//                 <p className="font-bold text-slate-800 text-sm">Neighbo Premium Content</p>
+//                 <p className="text-xs text-slate-500">Verified Community Merchant</p>
+//               </div>
+//             </div>
+
+//             {/* Purchase Date & Payment Method */}
+//             <div className="grid grid-cols-2 gap-6 mb-8">
+//               <div>
+//                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Purchase Date</p>
+//                 <p className="text-sm font-bold text-slate-800">{purchaseDate}</p>
+//               </div>
+//               <div className="text-right">
+//                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Payment Method</p>
+//                 <p className="text-sm font-bold text-slate-800">Digital Wallet (SSLCommerz)</p>
+//               </div>
+//             </div>
+
+//             {/* Transaction ID Row */}
+//             <div className="bg-slate-50 rounded-xl p-3 mb-6 border border-slate-100">
+//               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Transaction ID</p>
+//               <p className="text-xs font-mono font-bold text-slate-700 break-all">{transaction.tranId}</p>
+//             </div>
+
+//             {/* Items Table */}
+//             <div className="border border-slate-100 rounded-2xl overflow-hidden mb-6">
+//               {/* Table Header */}
+//               <div className="grid grid-cols-12 bg-slate-50 px-4 py-3 border-b border-slate-100">
+//                 <div className="col-span-3">
+//                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Product Type</p>
+//                 </div>
+//                 <div className="col-span-6">
+//                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Plan / Content Title</p>
+//                 </div>
+//                 <div className="col-span-3 text-right">
+//                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Amount (BDT)</p>
+//                 </div>
+//               </div>
+
+//               {/* Table Row */}
+//               <div className="grid grid-cols-12 items-start px-4 py-4">
+//                 <div className="col-span-3">
+//                   <span className="inline-block px-2 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase rounded-md">
+//                     {productLabel}
+//                   </span>
+//                 </div>
+//                 <div className="col-span-6">
+//                   <p className="font-bold text-slate-800 text-sm">{contentTitle}</p>
+//                   {transaction.type === "PLAN" && (
+//                     <p className="text-xs text-slate-500 mt-1">
+//                       Unlimited access to premium content, priority listings, and verified neighbor badge.
+//                     </p>
+//                   )}
+//                   {transaction.type === "UNLOCK" && transaction.creator && (
+//                     <p className="text-xs text-slate-500 mt-1">
+//                       Premium content by @{transaction.creator.username}
+//                     </p>
+//                   )}
+//                 </div>
+//                 <div className="col-span-3 text-right">
+//                   <p className="text-lg font-black text-slate-800">
+//                     {transaction.amount.toLocaleString("en-BD")}
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Subtotal */}
+//             <div className="flex justify-end mb-2">
+//               <div className="w-64 flex justify-between items-center">
+//                 <p className="text-sm text-slate-500">Subtotal</p>
+//                 <p className="text-sm font-bold text-slate-800">
+//                   {transaction.amount.toLocaleString("en-BD")}.00 BDT
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* Total */}
+//             <div className="flex justify-end mb-8">
+//               <div className="bg-primary/5 border border-primary/10 rounded-2xl px-6 py-4 w-64">
+//                 <div className="flex justify-between items-center">
+//                   <p className="text-lg font-black text-primary">Total Amount</p>
+//                   <p className="text-xl font-black text-primary">
+//                     {transaction.amount.toLocaleString("en-BD")}.00 BDT
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* Footer */}
+//             <div className="h-px bg-slate-100 mb-4" />
+//             <div className="flex justify-between items-center">
+//               <div className="flex items-center gap-2 text-xs text-slate-400">
+//                 <CheckCircle2 size={14} className="text-green-500" />
+//                 <span>This is a digitally generated invoice. No signature required.</span>
+//               </div>
+//               <p className="text-xs text-slate-400">© 2026 Neighbo Community Platform.</p>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Action Buttons */}
+//         <div className="p-4 border-t border-slate-100 flex gap-3 bg-white">
+//           <button
+//             onClick={handleDownloadPdf}
+//             className="flex-1 flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-2xl font-bold hover:bg-primary/90 transition shadow-lg shadow-primary/20"
+//           >
+//             <Download size={18} />
+//             Download PDF
+//           </button>
+//           <button
+//             onClick={handleShareLink}
+//             className="flex-1 flex items-center justify-center gap-2 py-3 bg-slate-50 text-slate-700 rounded-2xl font-bold hover:bg-slate-100 transition border border-slate-200"
+//           >
+//             {copied ? <CheckCircle2 size={18} className="text-green-500" /> : <Link2 size={18} />}
+//             {copied ? "Copied!" : "Copy Link"}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
