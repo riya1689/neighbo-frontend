@@ -380,13 +380,13 @@ export default function CashMemoModal({ transaction, onClose }: CashMemoModalPro
             <Download size={18} />
             Download PDF
           </button>
-          <button
+          {/* <button
             onClick={handleShareLink}
             className="flex-1 flex items-center justify-center gap-2 py-3 bg-slate-50 text-slate-700 rounded-2xl font-bold hover:bg-slate-100 transition border border-slate-200"
           >
             {copied ? <CheckCircle2 size={18} className="text-green-500" /> : <Link2 size={18} />}
             {copied ? "Copied!" : "Copy Link"}
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
