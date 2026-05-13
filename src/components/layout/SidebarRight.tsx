@@ -13,13 +13,23 @@ interface SuggestedUser {
   neighborhood?: { name: string };
 }
 
+interface UpdatePost {
+  id: string;
+  title: string;
+  updateType: string;
+  createdAt: string;
+}
+
 export default function SidebarRight() {
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
+  const [updates, setUpdates] = useState<UpdatePost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingUpdates, setLoadingUpdates] = useState(true);
   const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchSuggestions();
+    fetchUpdates();
   }, []);
 
   const fetchSuggestions = async () => {
@@ -39,6 +49,21 @@ export default function SidebarRight() {
       console.error("Failed to fetch suggestions", e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUpdates = async () => {
+    try {
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();;
+      const res = await fetch(`${apiUrl}/updates?limit=2`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setUpdates(data);
+      }
+    } catch (e) {
+      console.error("Failed to fetch updates", e);
+    } finally {
+      setLoadingUpdates(false);
     }
   };
 
@@ -82,21 +107,38 @@ export default function SidebarRight() {
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-soft-gray">
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-poppins font-bold text-dark-text flex items-center gap-2">
-            <Zap size={18} className="text-accent-red fill-accent-red/10" /> New Updates
+            <Zap size={18} className="text-accent-red fill-accent-red animate-thunder" /> New Updates
           </h3>
-          <button className="text-xs text-primary font-bold hover:underline">See All</button>
+          <Link href="/new-updates" className="text-xs text-primary font-bold hover:underline">See All</Link>
         </div>
         
         <div className="space-y-4">
-          <div className="p-3 hover:bg-background border border-transparent hover:border-soft-gray rounded-xl transition cursor-pointer group">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-1.5 h-1.5 bg-accent-red rounded-full" />
-              <span className="text-[10px] font-bold text-dark-text/40 uppercase">Neighborhood Alert</span>
+          {loadingUpdates ? (
+            <div className="animate-pulse space-y-3">
+              <div className="h-2 bg-slate-100 rounded w-1/2" />
+              <div className="h-3 bg-slate-100 rounded w-full" />
             </div>
-            <p className="text-xs font-inter text-dark-text/80 group-hover:text-primary leading-relaxed">
-              New community cleanup scheduled for next Sunday at Central Park...
-            </p>
-          </div>
+          ) : updates.length === 0 ? (
+            <p className="text-xs text-slate-400 text-center py-2">No updates yet</p>
+          ) : (
+            updates.map((update) => (
+              <Link 
+                key={update.id} 
+                href="/new-updates"
+                className="block p-3 hover:bg-background border border-transparent hover:border-soft-gray rounded-xl transition cursor-pointer group"
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-1.5 h-1.5 bg-accent-red rounded-full" />
+                  <span className="text-[10px] font-bold text-dark-text/40 uppercase tracking-tighter">
+                    {update.updateType.replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <p className="text-xs font-inter text-dark-text/80 group-hover:text-primary leading-relaxed line-clamp-2">
+                  {update.title}
+                </p>
+              </Link>
+            ))
+          )}
         </div>
       </div>
 
