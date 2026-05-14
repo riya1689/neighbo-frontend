@@ -14,7 +14,8 @@ import {
   ShieldCheck,
   Menu,
   X,
-  Zap
+  Zap,
+  Calendar
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -69,6 +70,7 @@ export default function AdminLayout({
     { name: "Premium Plan Management", icon: <CreditCard size={20} />, href: "/admin/plans" },
     { name: "Payment Overview", icon: <History size={20} />, href: "/admin/payments" },
     { name: "New Update Post", icon: <Zap size={20} className="text-accent-red" />, href: "/admin/updates" },
+    { name: "Event Management", icon: <Calendar size={20} />, href: "/admin/events" },
   ];
 
   const handleLogout = () => {

@@ -13,7 +13,8 @@ import {
   Mail,
   AtSign,
   Menu,
-  X
+  X,
+  Calendar
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -63,6 +64,7 @@ export default function DashboardLayout({
     { name: "Premium Content Purchases", icon: <History size={20} />, href: "/dashboard/purchases" },
     { name: "Post Management", icon: <FileText size={20} />, href: "/dashboard/posts" },
     { name: "My Premium Plans", icon: <History size={20} />, href: "/dashboard/plans" },
+    { name: "Create Event", icon: <Calendar size={20} />, href: "/dashboard/events" },
   ];
 
   return (

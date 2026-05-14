@@ -20,16 +20,26 @@ interface UpdatePost {
   createdAt: string;
 }
 
+interface UpcomingEvent {
+  id: string;
+  title: string;
+  date: string;
+  neighborhood: { name: string };
+}
+
 export default function SidebarRight() {
   const [suggestedUsers, setSuggestedUsers] = useState<SuggestedUser[]>([]);
   const [updates, setUpdates] = useState<UpdatePost[]>([]);
+  const [events, setEvents] = useState<UpcomingEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingUpdates, setLoadingUpdates] = useState(true);
+  const [loadingEvents, setLoadingEvents] = useState(true);
   const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchSuggestions();
     fetchUpdates();
+    fetchEvents();
   }, []);
 
   const fetchSuggestions = async () => {
@@ -64,6 +74,21 @@ export default function SidebarRight() {
       console.error("Failed to fetch updates", e);
     } finally {
       setLoadingUpdates(false);
+    }
+  };
+
+  const fetchEvents = async () => {
+    try {
+      const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").split(",")[0].trim();;
+      const res = await fetch(`${apiUrl}/events/approved?limit=2`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setEvents(data);
+      }
+    } catch (e) {
+      console.error("Failed to fetch events", e);
+    } finally {
+      setLoadingEvents(false);
     }
   };
 
@@ -202,23 +227,47 @@ export default function SidebarRight() {
 
       {/* --- UPCOMING EVENTS SECTION --- */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-soft-gray">
-        <h3 className="font-poppins font-bold text-dark-text mb-5">Upcoming Events</h3>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-poppins font-bold text-dark-text">Upcoming Events</h3>
+          <Link href="/upcoming-events" className="text-xs text-primary font-bold hover:underline">See All</Link>
+        </div>
+        
         <div className="space-y-5">
-          <div className="flex gap-4 items-start">
-            <div className="flex flex-col items-center justify-center bg-primary-hover min-w-[48px] h-14 rounded-xl border border-primary/10">
-              <span className="text-[10px] font-bold text-primary uppercase">May</span>
-              <span className="text-lg font-bold text-primary">24</span>
-            </div>
-            <div className="flex-1">
-              <h4 className="text-sm font-poppins font-bold text-dark-text leading-tight">Community Picnic</h4>
-              <div className="flex items-center gap-1 text-[11px] text-dark-text/50 mt-1">
-                <MapPin size={10} /> <span>Central Park</span>
+          {loadingEvents ? (
+            <div className="animate-pulse flex gap-4">
+              <div className="w-12 h-14 bg-slate-100 rounded-xl" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-slate-100 rounded w-3/4" />
+                <div className="h-3 bg-slate-100 rounded w-1/2" />
               </div>
-              <button className="mt-2 flex items-center gap-1 text-xs font-bold text-primary hover:gap-2 transition-all">
-                Join Event <Calendar size={12} />
-              </button>
             </div>
-          </div>
+          ) : events.length === 0 ? (
+            <p className="text-xs text-slate-400 text-center py-2">No upcoming events</p>
+          ) : (
+            events.map((event) => {
+              const eventDate = new Date(event.date);
+              const month = eventDate.toLocaleString('default', { month: 'short' });
+              const day = eventDate.getDate();
+
+              return (
+                <div key={event.id} className="flex gap-4 items-start group">
+                  <div className="flex flex-col items-center justify-center bg-primary-hover min-w-[48px] h-14 rounded-xl border border-primary/10 transition-colors group-hover:bg-primary group-hover:text-white">
+                    <span className="text-[10px] font-bold uppercase">{month}</span>
+                    <span className="text-lg font-bold">{day}</span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-poppins font-bold text-dark-text leading-tight group-hover:text-primary transition-colors line-clamp-1">{event.title}</h4>
+                    <div className="flex items-center gap-1 text-[11px] text-dark-text/50 mt-1">
+                      <MapPin size={10} /> <span>{event.neighborhood.name}</span>
+                    </div>
+                    <Link href="/upcoming-events" className="mt-2 flex items-center gap-1 text-xs font-bold text-primary hover:gap-2 transition-all">
+                      Details <Calendar size={12} />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>
