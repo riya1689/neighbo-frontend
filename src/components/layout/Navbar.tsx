@@ -220,11 +220,11 @@ export default function Navbar() {
                 href={`/profile/${user.username || 'me'}`}
                 className="hidden sm:flex items-center gap-2 px-2 py-1.5 bg-background rounded-full border border-softGray hover:border-primary/30 transition-colors group"
               >
-                <div className="w-6 h-6 rounded-full overflow-hidden border border-slate-100 flex items-center justify-center bg-slate-50">
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-100 flex items-center justify-center bg-primary/10 text-primary font-bold text-xs uppercase">
                   {user.profileImage ? (
                     <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
                   ) : (
-                    <UserIcon size={14} className="text-primary group-hover:scale-110 transition-transform" />
+                    (user.displayName || user.name || "?").charAt(0)
                   )}
                 </div>
                 <span className="text-sm font-semibold text-darkText group-hover:text-primary transition-colors pr-1">{user.displayName || user.name}</span>
@@ -301,13 +301,13 @@ export default function Navbar() {
                 {user ? (
                   <>
                     <Link href={`/profile/${user.username || 'me'}`} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
-                       <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-100 flex items-center justify-center bg-slate-50">
-                        {user.profileImage ? (
-                          <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
-                        ) : (
-                          <UserIcon size={18} />
-                        )}
-                       </div> View Profile
+                        <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-100 flex items-center justify-center bg-primary/10 text-primary font-bold text-xs uppercase">
+                          {user.profileImage ? (
+                            <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
+                          ) : (
+                            (user.displayName || user.name || "?").charAt(0)
+                          )}
+                        </div> View Profile
                     </Link>
                     <Link href="/edit-profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
                        <div className="p-2 bg-slate-50 rounded-lg"><Sparkles size={18} /></div> Edit Profile

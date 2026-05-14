@@ -194,11 +194,11 @@ export default function SidebarRight() {
             suggestedUsers.map((user) => (
               <div key={user.id} className="flex items-center justify-between group">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs border border-primary/5 overflow-hidden">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs border border-primary/5 overflow-hidden uppercase">
                     {user.profileImage ? (
                       <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
                     ) : (
-                      user.displayName.charAt(0)
+                      (user.displayName || user.username || "?").charAt(0)
                     )}
                   </div>
                   <div className="flex flex-col">
@@ -258,7 +258,7 @@ export default function SidebarRight() {
 
               return (
                 <div key={event.id} className="flex gap-4 items-start group">
-                  <div className="flex flex-col items-center justify-center bg-primary-hover min-w-[48px] h-14 rounded-xl border border-primary/10 transition-colors group-hover:bg-primary group-hover:text-white">
+                  <div className="flex flex-col items-center justify-center bg-orange-500 text-white min-w-[48px] h-14 rounded-xl shadow-md shadow-orange-200 border border-orange-400/20 transition-all group-hover:scale-105 group-hover:shadow-orange-300">
                     <span className="text-[10px] font-bold uppercase">{month}</span>
                     <span className="text-lg font-bold">{day}</span>
                   </div>

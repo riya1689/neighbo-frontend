@@ -178,12 +178,12 @@ export default function PostCard({ post: initialPost }: PostProps) {
         <div className="flex items-center gap-3 overflow-hidden">
           <Link
             href={`/profile/${post.user.username || 'me'}`}
-            className="w-10 h-10 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center font-bold text-primary hover:bg-primary/20 transition-colors overflow-hidden border border-slate-100"
+            className="w-10 h-10 rounded-full bg-primary/10 flex-shrink-0 flex items-center justify-center font-bold text-primary hover:bg-primary/20 transition-colors overflow-hidden border border-slate-100 uppercase"
           >
             {post.user.profileImage ? (
               <img src={post.user.profileImage} alt={post.user.displayName} className="w-full h-full object-cover" />
             ) : (
-              post.user.displayName.charAt(0)
+              (post.user.displayName || post.user.username || "?").charAt(0)
             )}
           </Link>
           <div className="flex-1 min-w-0">
@@ -422,11 +422,11 @@ export default function PostCard({ post: initialPost }: PostProps) {
             {comments.map((comment) => (
               <div key={comment.id} className="space-y-4">
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-[10px] overflow-hidden border border-slate-100">
+                  <div className="w-8 h-8 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center font-bold text-slate-500 text-[10px] overflow-hidden border border-slate-100 uppercase">
                     {comment.user.profileImage ? (
                       <img src={comment.user.profileImage} alt={comment.user.displayName} className="w-full h-full object-cover" />
                     ) : (
-                      comment.user.displayName.charAt(0)
+                      (comment.user.displayName || "?").charAt(0)
                     )}
                   </div>
                   <div className="flex-1">
@@ -452,11 +452,11 @@ export default function PostCard({ post: initialPost }: PostProps) {
                   <div className="ml-11 space-y-4 border-l-2 border-slate-100 pl-4">
                     {comment.replies.map((reply) => (
                       <div key={reply.id} className="flex gap-3">
-                        <div className="w-6 h-6 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center font-bold text-slate-400 text-[8px] overflow-hidden border border-slate-100">
+                        <div className="w-6 h-6 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center font-bold text-slate-400 text-[8px] overflow-hidden border border-slate-100 uppercase">
                           {reply.user.profileImage ? (
                             <img src={reply.user.profileImage} alt={reply.user.displayName} className="w-full h-full object-cover" />
                           ) : (
-                            reply.user.displayName.charAt(0)
+                            (reply.user.displayName || "?").charAt(0)
                           )}
                         </div>
                         <div className="flex-1">

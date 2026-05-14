@@ -121,7 +121,7 @@ export default function UpcomingEventsPage() {
                          <div className="p-8 md:p-10 space-y-6">
                             <div className="flex items-center justify-between flex-wrap gap-4">
                                <div className="flex items-center gap-3">
-                                  <div className="flex flex-col items-center justify-center bg-primary text-white w-14 h-14 rounded-2xl shadow-lg shadow-primary/20">
+                                  <div className="flex flex-col items-center justify-center bg-orange-500 text-white w-14 h-14 rounded-2xl shadow-lg shadow-orange-200 border border-orange-400/20">
                                      <span className="text-[10px] font-black uppercase leading-none">{eventDate.toLocaleString('default', { month: 'short' })}</span>
                                      <span className="text-xl font-black leading-tight mt-0.5">{eventDate.getDate()}</span>
                                   </div>

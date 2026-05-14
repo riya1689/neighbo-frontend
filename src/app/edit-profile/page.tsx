@@ -385,10 +385,9 @@ export default function EditProfilePage() {
                             }}
                           />
                         ) : (
-                          <UserIcon
-                            size={14}
-                            className="text-slate-300"
-                          />
+                          <span className="text-primary font-bold text-xs uppercase">
+                            {(displayName || "?").charAt(0)}
+                          </span>
                         )}
                       </div>
                     </div>

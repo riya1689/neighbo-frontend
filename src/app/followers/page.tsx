@@ -115,11 +115,11 @@ export default function FollowersPage() {
                       className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all hover:border-primary/20"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white font-bold text-slate-700 overflow-hidden">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white font-bold text-primary overflow-hidden uppercase">
                           {neighbor.profileImage ? (
                             <img src={neighbor.profileImage} alt={neighbor.displayName} className="w-full h-full object-cover" />
                           ) : (
-                            (neighbor.displayName || "").charAt(0)
+                            (neighbor.displayName || neighbor.username || "?").charAt(0)
                           )}
                         </div>
 
