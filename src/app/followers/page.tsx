@@ -53,12 +53,12 @@ export default function FollowersPage() {
       <Navbar />
 
       <main className="container mx-auto max-w-7xl px-4 pt-24">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <aside className="hidden lg:block lg:col-span-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarLeft />
           </aside>
 
-          <section className="col-span-1 space-y-6 lg:col-span-6">
+          <section className="col-span-1 space-y-6 md:col-span-6">
             <div className="rounded-3xl border border-soft-gray bg-white p-8 shadow-sm">
               <div className="mb-8 flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -145,7 +145,7 @@ export default function FollowersPage() {
             </div>
           </section>
 
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarRight />
           </aside>
         </div>

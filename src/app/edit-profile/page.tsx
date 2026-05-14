@@ -217,15 +217,15 @@ export default function EditProfilePage() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
-        <div className="flex flex-col lg:flex-row gap-8">
-
-          {/* Left Sidebar */}
-          <div className="hidden lg:block w-64 flex-shrink-0">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+          
+          {/* --- LEFT SIDEBAR (3 cols) --- */}
+          <aside className="hidden md:block md:col-span-3">
             <SidebarLeft />
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1 max-w-2xl mx-auto w-full">
+          </aside>
+ 
+          {/* --- MIDDLE MAIN SECTION (9 cols) --- */}
+          <section className="col-span-1 md:col-span-9 space-y-6">
 
             {/* Page Header */}
             <div className="mb-8 flex items-center gap-4">
@@ -551,7 +551,7 @@ export default function EditProfilePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Right Sidebar */}
           <div className="hidden xl:block w-80 flex-shrink-0">

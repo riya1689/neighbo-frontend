@@ -154,14 +154,14 @@ export default function AIProjectPage() {
       <Navbar />
 
       <main className="container mx-auto max-w-7xl px-4 pt-20 pb-8">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 h-[calc(100vh-120px)]">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12 h-[calc(100vh-120px)]">
           {/* Left Sidebar */}
-          <aside className="hidden lg:block lg:col-span-3 h-full">
+          <aside className="hidden md:block md:col-span-3 h-full">
             <SidebarLeft />
           </aside>
 
           {/* Main Chat Section */}
-          <section className="col-span-1 lg:col-span-6 flex flex-col h-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden relative">
+          <section className="col-span-1 md:col-span-6 flex flex-col h-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden relative">
             {/* Chat Header */}
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
               <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export default function AIProjectPage() {
           </section>
 
           {/* Right Sidebar */}
-          <aside className="hidden lg:block lg:col-span-3 h-full">
+          <aside className="hidden xl:block md:col-span-3 h-full">
             <SidebarRight />
           </aside>
         </div>

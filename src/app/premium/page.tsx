@@ -86,15 +86,15 @@ export default function PremiumPage() {
       <Navbar />
 
       <main className="container mx-auto max-w-7xl px-4 pt-20">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           
           {/* LEFT SIDEBAR */}
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarLeft />
           </aside>
 
           {/* MIDDLE MAIN SECTION */}
-          <section className="col-span-1 lg:col-span-9 space-y-8">
+          <section className="col-span-1 md:col-span-9 space-y-8">
             <div className="text-center space-y-4 max-w-2xl mx-auto py-8">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}

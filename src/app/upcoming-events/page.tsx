@@ -55,15 +55,15 @@ export default function UpcomingEventsPage() {
       <Navbar />
 
       <main className="container mx-auto max-w-7xl px-4 pt-24 pb-12">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           
           {/* LEFT SIDEBAR */}
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarLeft />
           </aside>
 
           {/* MAIN CONTENT */}
-          <section className="col-span-1 lg:col-span-6 space-y-6 pb-20">
+          <section className="col-span-1 md:col-span-6 space-y-6 pb-20">
             
             <div className="flex items-center justify-between mb-2">
                <Link href="/" className="flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-primary transition-colors">
@@ -197,7 +197,7 @@ export default function UpcomingEventsPage() {
           </section>
 
           {/* RIGHT SIDEBAR */}
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarRight />
           </aside>
 

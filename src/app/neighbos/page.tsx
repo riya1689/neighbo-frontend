@@ -71,13 +71,13 @@ export default function NeighbosHub() {
       <Navbar />
 
       <main className="container mx-auto max-w-7xl px-4 pt-24">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarLeft />
           </aside>
 
-          <section className="col-span-1 lg:col-span-6 space-y-6">
+          <section className="col-span-1 md:col-span-6 space-y-6">
             {/* Stats Header */}
             <div className="bg-white rounded-3xl p-8 border border-soft-gray shadow-sm">
               <div className="flex items-center gap-4 mb-8">
@@ -90,18 +90,18 @@ export default function NeighbosHub() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:border-primary/20 transition-all cursor-pointer" onClick={() => setActiveTab("followers")}>
-                  <p className="text-4xl font-bold text-slate-800 mb-2">{stats.followers}</p>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Followers</p>
+              <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                <div className="bg-slate-50 rounded-2xl p-3 sm:p-6 text-center border border-slate-100 hover:border-primary/20 transition-all cursor-pointer" onClick={() => setActiveTab("followers")}>
+                  <p className="text-2xl sm:text-4xl font-bold text-slate-800 mb-1 sm:mb-2">{stats.followers}</p>
+                  <p className="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-tight sm:tracking-widest mt-1">Followers</p>
                 </div>
-                <div className="bg-slate-50 rounded-2xl p-6 text-center border border-slate-100 hover:border-primary/20 transition-all cursor-pointer" onClick={() => setActiveTab("following")}>
-                  <p className="text-4xl font-bold text-slate-800 mb-2">{stats.following}</p>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-1">Following</p>
+                <div className="bg-slate-50 rounded-2xl p-3 sm:p-6 text-center border border-slate-100 hover:border-primary/20 transition-all cursor-pointer" onClick={() => setActiveTab("following")}>
+                  <p className="text-2xl sm:text-4xl font-bold text-slate-800 mb-1 sm:mb-2">{stats.following}</p>
+                  <p className="text-[9px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-tight sm:tracking-widest mt-1">Following</p>
                 </div>
-                <div className="bg-primary/5 rounded-2xl p-6 text-center border border-primary/10">
-                  <p className="text-4xl font-bold text-primary mb-2">{stats.totalNeighbos}</p>
-                  <p className="text-[11px] font-bold text-primary/60 uppercase tracking-widest mt-1">Total Neighbos</p>
+                <div className="bg-primary/5 rounded-2xl p-3 sm:p-6 text-center border border-primary/10">
+                  <p className="text-2xl sm:text-4xl font-bold text-primary mb-1 sm:mb-2">{stats.totalNeighbos}</p>
+                  <p className="text-[9px] sm:text-[11px] font-bold text-primary/60 uppercase tracking-tight sm:tracking-widest mt-1">Total Neighbos</p>
                 </div>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function NeighbosHub() {
             </div>
           </section>
 
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarRight />
           </aside>
 

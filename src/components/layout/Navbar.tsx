@@ -1,10 +1,12 @@
 "use client";
 
-import { BellRing, LogOut, User as UserIcon, Search as SearchIcon, CheckCheck, Sparkles, X, Home, Calendar, Zap } from "lucide-react";
+import { BellRing, LogOut, User as UserIcon, Search as SearchIcon, CheckCheck, Sparkles, X, Home, Calendar, Zap, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
+import InviteModal from "../common/InviteModal";
+import { TrendingUp, UserCheck, Users as UsersIcon, UserPlus } from "lucide-react";
 
 interface Notification {
   id: string;
@@ -22,6 +24,8 @@ export default function Navbar() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isExploreSubmenuOpen, setIsExploreSubmenuOpen] = useState(false);
   
   const router = useRouter();
   const pathname = usePathname();
@@ -123,7 +127,7 @@ export default function Navbar() {
         {/* Mobile: Hamburger Button */}
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="block md:hidden p-2 text-darkText hover:bg-slate-100 rounded-lg transition-colors"
+          className="block lg:hidden p-2 text-darkText hover:bg-slate-100 rounded-lg transition-colors"
         >
           {isMobileMenuOpen ? <X size={24} /> : <div className="space-y-1.5"><div className="w-6 h-0.5 bg-gray-800"></div><div className="w-6 h-0.5 bg-gray-800"></div><div className="w-6 h-0.5 bg-gray-800"></div></div>}
         </button>
@@ -135,7 +139,7 @@ export default function Navbar() {
         </Link>
 
         {/* Middle: Search & Links (Desktop) */}
-        <div className="hidden md:flex items-center gap-6 flex-1 max-w-md mx-8">
+        <div className="hidden lg:flex items-center gap-6 flex-1 max-w-md mx-8">
           <form onSubmit={handleSearch} className="relative w-full">
             <input 
               type="text" 
@@ -252,7 +256,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 top-16 bg-white z-40 animate-in slide-in-from-left duration-300 md:hidden overflow-y-auto">
+        <div className="fixed inset-0 top-16 bg-white z-40 animate-in slide-in-from-left duration-300 lg:hidden overflow-y-auto">
           <div className="p-6 space-y-8">
             <form onSubmit={handleSearch} className="relative w-full">
               <input 
@@ -274,9 +278,30 @@ export default function Navbar() {
                 <Link href="/premium" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
                    <div className="p-2 bg-slate-50 rounded-lg text-amber-500"><Sparkles size={18} /></div> Premium Plan
                 </Link>
-                <Link href="/explore" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
-                   <div className="p-2 bg-slate-50 rounded-lg"><SearchIcon size={18} /></div> Explore
-                </Link>
+                <div>
+                  <button 
+                    onClick={() => setIsExploreSubmenuOpen(!isExploreSubmenuOpen)} 
+                    className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold"
+                  >
+                     <div className="flex items-center gap-3">
+                       <div className="p-2 bg-slate-50 rounded-lg"><SearchIcon size={18} /></div> Explore
+                     </div>
+                     <ChevronDown size={16} className={`transition-transform ${isExploreSubmenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isExploreSubmenuOpen && (
+                    <div className="ml-12 mt-1 space-y-1 border-l-2 border-slate-50 pl-2">
+                      <Link href="/explore" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 text-slate-600 text-sm font-bold">
+                        <TrendingUp size={16} /> Trendings
+                      </Link>
+                      <Link href="/followers" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 text-slate-600 text-sm font-bold">
+                        <UserCheck size={16} /> Followers
+                      </Link>
+                      <Link href="/following" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 text-slate-600 text-sm font-bold">
+                        <UsersIcon size={16} /> Following
+                      </Link>
+                    </div>
+                  )}
+                </div>
                 <Link href="/neighbos" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
                    <div className="p-2 bg-slate-50 rounded-lg"><UserIcon size={18} /></div> Neighbos
                 </Link>
@@ -292,6 +317,12 @@ export default function Navbar() {
                 <Link href="/upcoming-events" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
                    <div className="p-2 bg-slate-50 rounded-lg text-accent-green"><Calendar size={18} /></div> Upcoming Event
                 </Link>
+                <button 
+                  onClick={() => { setIsInviteOpen(true); setIsMobileMenuOpen(false); }} 
+                  className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-primary font-bold"
+                >
+                   <div className="p-2 bg-primary/10 rounded-lg"><UserPlus size={18} /></div> Invite Neighbo
+                </button>
               </div>
             </div>
 
@@ -327,6 +358,10 @@ export default function Navbar() {
           </div>
         </div>
       )}
+      <InviteModal 
+        isOpen={isInviteOpen} 
+        onClose={() => setIsInviteOpen(false)} 
+      />
     </nav>
   );
 }

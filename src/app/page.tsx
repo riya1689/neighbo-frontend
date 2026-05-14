@@ -12,22 +12,22 @@ export default function HomePage() {
       <Navbar />
 
       <main className="container mx-auto max-w-7xl px-4 pt-20">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           
           {/* --- LEFT SIDEBAR (3 cols) --- */}
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarLeft />
           </aside>
 
           {/* --- MIDDLE MAIN SECTION (6 cols) --- */}
-          <section className="col-span-1 lg:col-span-6 space-y-6">
+          <section className="col-span-1 md:col-span-6 space-y-6">
             <Hero />
             <CreatePost />
             <PostFeed />
           </section>
 
           {/* --- RIGHT SIDEBAR (3 cols) --- */}
-          <aside className="hidden lg:block lg:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <SidebarRight />
           </aside>
 
