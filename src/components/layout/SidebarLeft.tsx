@@ -123,12 +123,20 @@ export default function SidebarLeft() {
         whileHover={{ y: -5 }}
         className="bg-white rounded-2xl p-6 shadow-sm border border-soft-gray text-center space-y-4"
       >
-        <div className="w-full h-32 bg-background rounded-xl flex flex-col items-center justify-center border border-dashed border-soft-gray gap-2">
-           <div className="p-3 bg-primary/10 rounded-full text-primary">
-             <UserPlus size={32} />
-           </div>
-           <span className="text-[10px] uppercase font-bold text-dark-text/30 tracking-widest">Community Growth</span>
-        </div>
+        <div className="relative w-full h-48 overflow-hidden rounded-t-[2.5rem]">
+              {/* CHANGED: Image URL added here */}
+              <img
+                src="https://plus.unsplash.com/premium_photo-1728996029071-68d5e7e2d759?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE4fHx8ZW58MHx8fHx8"
+                alt="Community Growth"
+                className="w-full h-full object-cover"
+              />
+              {/* CHANGED: Dark gradient overlay for readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+              {/* CHANGED: "COMMUNITY GROWTH" badge repositioned as image overlay */}
+              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[11px] font-black uppercase tracking-widest text-white/90 bg-black/30 backdrop-blur-sm px-4 py-1.5 rounded-full">
+                Community Growth
+              </span>
+            </div>
         
         <div className="space-y-2">
           <h3 className="font-poppins font-bold text-lg text-dark-text leading-snug">Build a better neighborhood together.</h3>
