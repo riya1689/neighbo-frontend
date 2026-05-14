@@ -79,9 +79,11 @@ export default function UpcomingEventsPage() {
                <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full -mr-24 -mt-24 blur-3xl"></div>
                <div className="relative z-10">
                   <div className="flex items-center gap-4 text-primary mb-5">
-                     <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
-                        <Calendar size={32} />
-                     </div>
+                      <span className="absolute inset-0 rounded-2xl bg-orange-500 opacity-30 animate-ping"></span>
+                     <div className="relative w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-400/40">
+                           {/* CHANGED: Calendar icon color from text-primary to text-white for contrast on vivid bg */}
+                           <Calendar size={32} className="text-white drop-shadow" />
+                        </div>
                      <div>
                         <h1 className="text-3xl font-black font-poppins tracking-tight">Upcoming Events</h1>
                         <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Discover neighborhood happenings</p>
