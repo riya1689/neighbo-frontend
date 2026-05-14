@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 interface SuggestedUser {
   id: string;
   displayName: string;
+  profileImage?: string;
   neighborhood?: { name: string };
 }
 
@@ -132,8 +133,12 @@ export default function SuggestedUsersPage() {
                       className="p-4 bg-white border border-slate-100 rounded-2xl hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all flex items-center justify-between group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary border border-primary/5">
-                          {user.displayName.charAt(0)}
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary border border-primary/5 overflow-hidden">
+                          {user.profileImage ? (
+                            <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
+                          ) : (
+                            user.displayName.charAt(0)
+                          )}
                         </div>
                         <div>
                           <h4 className="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">{user.displayName}</h4>

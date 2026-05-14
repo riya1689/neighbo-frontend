@@ -12,6 +12,7 @@ interface Neighbor {
   id: string;
   displayName: string;
   username: string;
+  profileImage?: string;
   neighborhood?: { name: string };
 }
 
@@ -110,8 +111,12 @@ export default function FollowingPage() {
                   {following.map((neighbor) => (
                     <div key={neighbor.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-primary/20 hover:shadow-lg transition-all group">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center font-bold text-primary">
-                          {(neighbor.displayName || "").charAt(0)}
+                        <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center font-bold text-primary overflow-hidden">
+                          {neighbor.profileImage ? (
+                            <img src={neighbor.profileImage} alt={neighbor.displayName} className="w-full h-full object-cover" />
+                          ) : (
+                            (neighbor.displayName || "").charAt(0)
+                          )}
                         </div>
                         <div>
                           <h4 className="font-bold text-slate-800 group-hover:text-primary transition-colors">{neighbor.displayName}</h4>

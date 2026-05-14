@@ -10,6 +10,7 @@ interface SuggestedUser {
   id: string;
   displayName: string;
   username: string;
+  profileImage?: string;
   neighborhood?: { name: string };
 }
 
@@ -193,8 +194,12 @@ export default function SidebarRight() {
             suggestedUsers.map((user) => (
               <div key={user.id} className="flex items-center justify-between group">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs border border-primary/5">
-                    {user.displayName.charAt(0)}
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs border border-primary/5 overflow-hidden">
+                    {user.profileImage ? (
+                      <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
+                    ) : (
+                      user.displayName.charAt(0)
+                    )}
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-poppins font-bold text-dark-text">{user.displayName}</span>
@@ -228,7 +233,9 @@ export default function SidebarRight() {
       {/* --- UPCOMING EVENTS SECTION --- */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-soft-gray">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-poppins font-bold text-dark-text">Upcoming Events</h3>
+          <h3 className="font-poppins font-bold text-dark-text flex items-center gap-2">
+            <Calendar size={18} className="text-primary fill-primary/10 animate-thunder" /> Upcoming Events
+          </h3>
           <Link href="/upcoming-events" className="text-xs text-primary font-bold hover:underline">See All</Link>
         </div>
         

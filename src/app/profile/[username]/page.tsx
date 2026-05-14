@@ -24,6 +24,7 @@ interface UserProfile {
   name?: string;
   username: string;
   bio: string | null;
+  profileImage?: string;
   role: string;
   neighborhood: { name: string };
   createdAt: string;
@@ -114,8 +115,12 @@ export default function ProfilePage() {
                 <div className="flex justify-between items-end -mt-12 sm:-mt-16 mb-4">
                   <div className="relative">
                     <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white p-1.5 shadow-md border border-slate-50">
-                      <div className="w-full h-full rounded-[1.25rem] bg-primary/10 flex items-center justify-center text-3xl sm:text-4xl font-black text-primary">
-                        {(profile.displayName || profile.name || "?").charAt(0)}
+                      <div className="w-full h-full rounded-[1.25rem] bg-primary/10 flex items-center justify-center text-3xl sm:text-4xl font-black text-primary overflow-hidden">
+                        {profile.profileImage ? (
+                          <img src={profile.profileImage} alt={profile.displayName} className="w-full h-full object-cover" />
+                        ) : (
+                          (profile.displayName || profile.name || "?").charAt(0)
+                        )}
                       </div>
                     </div>
                   </div>

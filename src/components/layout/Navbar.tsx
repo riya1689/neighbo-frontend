@@ -1,6 +1,6 @@
 "use client";
 
-import { BellRing, LogOut, User as UserIcon, Search as SearchIcon, CheckCheck, Sparkles, X, Home } from "lucide-react";
+import { BellRing, LogOut, User as UserIcon, Search as SearchIcon, CheckCheck, Sparkles, X, Home, Calendar, Zap } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -218,10 +218,16 @@ export default function Navbar() {
             <div className="flex items-center gap-3">
               <Link 
                 href={`/profile/${user.username || 'me'}`}
-                className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-background rounded-full border border-softGray hover:border-primary/30 transition-colors group"
+                className="hidden sm:flex items-center gap-2 px-2 py-1.5 bg-background rounded-full border border-softGray hover:border-primary/30 transition-colors group"
               >
-                <UserIcon size={16} className="text-primary group-hover:scale-110 transition-transform" />
-                <span className="text-sm font-semibold text-darkText group-hover:text-primary transition-colors">{user.displayName || user.name}</span>
+                <div className="w-6 h-6 rounded-full overflow-hidden border border-slate-100 flex items-center justify-center bg-slate-50">
+                  {user.profileImage ? (
+                    <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
+                  ) : (
+                    <UserIcon size={14} className="text-primary group-hover:scale-110 transition-transform" />
+                  )}
+                </div>
+                <span className="text-sm font-semibold text-darkText group-hover:text-primary transition-colors pr-1">{user.displayName || user.name}</span>
               </Link>
               <button 
                 onClick={handleLogout}
@@ -277,6 +283,15 @@ export default function Navbar() {
                 <Link href="/categories" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
                    <div className="p-2 bg-slate-50 rounded-lg"><Sparkles size={18} /></div> Category
                 </Link>
+                <Link href="/new-updates" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
+                   <div className="p-2 bg-slate-50 rounded-lg text-accent-red"><Zap size={18} /></div> New Update
+                </Link>
+                <Link href="/suggested-users" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
+                   <div className="p-2 bg-slate-50 rounded-lg text-blue-500"><UserIcon size={18} /></div> Suggested User
+                </Link>
+                <Link href="/upcoming-events" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
+                   <div className="p-2 bg-slate-50 rounded-lg text-accent-green"><Calendar size={18} /></div> Upcoming Event
+                </Link>
               </div>
             </div>
 
@@ -286,7 +301,13 @@ export default function Navbar() {
                 {user ? (
                   <>
                     <Link href={`/profile/${user.username || 'me'}`} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
-                       <div className="p-2 bg-slate-50 rounded-lg"><UserIcon size={18} /></div> View Profile
+                       <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-100 flex items-center justify-center bg-slate-50">
+                        {user.profileImage ? (
+                          <img src={user.profileImage} alt={user.displayName} className="w-full h-full object-cover" />
+                        ) : (
+                          <UserIcon size={18} />
+                        )}
+                       </div> View Profile
                     </Link>
                     <Link href="/edit-profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 text-slate-700 font-bold">
                        <div className="p-2 bg-slate-50 rounded-lg"><Sparkles size={18} /></div> Edit Profile
