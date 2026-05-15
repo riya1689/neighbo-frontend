@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Neighbo Frontend
+
+Welcome to the frontend of **Neighbo**, a community-driven platform designed to connect neighbors, share updates, and provide a space for local interactions.
+
+## Project Overview
+The Neighbo Frontend is a high-performance web application built with **Next.js 16**. It provides a sleek, interactive interface for users to connect with their neighbors, discover local events, and access premium community content. The UI is designed with a focus on usability, speed, and premium aesthetics.
+
+---
+
+## Features & Functionality
+- **Responsive Dashboard**: A personalized home feed for neighborhood updates.
+- **AI Assistant**: A dedicated chat interface powered by Gemini for local help.
+- **Premium Content**: Integrated flow for unlocking exclusive community posts.
+- **Event Discovery**: Calendar and list views for upcoming neighborhood events.
+- **Onboarding Flow**: Structured registration process including neighborhood selection.
+- **Admin Panel**: Full-featured management suite for platform administrators.
+- **Dynamic Interactions**: Smooth animations and real-time feedback for upvotes, downvotes, comments, shares and follows.
+
+---
+
+## Tech Stack
+- **Framework**: Next.js 16 (App Router)
+- **Library**: React 19
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **Icons**: Lucide React, React Icons
+- **State Management**: React Hooks & Context API
+- **Form Handling**: Native React forms with validation
+- **Notifications**: React Hot Toast
+
+---
+
+## Main Routes
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page and main feed |
+| `/dashboard` | User's personalized activity center |
+| `/ai` | Neighbo AI Assistant chat |
+| `/explore` | Discover new neighborhoods and trending posts |
+| `/premium` | Premium subscription plans and features |
+| `/upcoming-events` | Local event listings |
+| `/admin` | Administrative dashboard (Admin only) |
+| `/login` / `/register` | Authentication pages |
+| `/payment` | Checkout and payment status pages |
+
+---
+
+## Roles & Access
+- **Public**: Access to landing page and public feeds.
+- **User**: Full access to social features, AI assistant, and premium subscriptions.
+- **Admin**: Exclusive access to the `/admin` route for platform management and analytics.
+
+---
+
+## Error Handling & UI Feedback
+- **Toast Notifications**: Real-time feedback for successful actions or errors using `react-hot-toast`.
+- **Form Validation**: Client-side checks to ensure clean data submission.
+- **Responsive Error States**: Graceful handling of empty states and API errors with user-friendly messages.
+
+---
+
+## Design System
+The project follows a **Premium Aesthetic** guide:
+- **Typography**: Modern, readable fonts.
+- **Color Palette**: Harmonious and professional community-focused colors.
+- **Interactions**: Subtle micro-animations using Framer Motion to enhance UX.
+- **Responsiveness**: Mobile-first design ensuring a perfect experience on all devices.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+1. **Install Dependencies**:
+   ```bash
+   pnpm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Environment Setup**:
+   Create a `.env.local` file with:
+   - `NEXT_PUBLIC_API_URL` (Pointing to the backend)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Run Development Server**:
+   ```bash
+   pnpm dev
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Build for Production**:
+   ```bash
+   pnpm build
+   pnpm start
+   ```
