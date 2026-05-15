@@ -7,6 +7,23 @@ The Neighbo Frontend is a high-performance web application built with **Next.js 
 
 ---
 
+## Role & Permissions
+The system implements a Role-Based Access Control (RBAC) mechanism:
+- **USER**:
+    - Create and interact with posts (comments, votes, shares).
+    - Follow/Unfollow other neighbors.
+    - Subscribe to Premium Plans.
+    - Unlock premium content.
+    - Access AI Assistant.
+- **ADMIN**:
+    - All USER permissions.
+    - Access to Admin Dashboard.
+    - Manage categories and neighborhoods.
+    - Moderate events and system updates.
+    - View platform-wide revenue and analytics.
+
+---
+
 ## Features & Functionality
 - **Responsive Dashboard**: A personalized home feed for neighborhood updates.
 - **AI Assistant**: A dedicated chat interface powered by Gemini for local help.
