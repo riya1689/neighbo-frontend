@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { 
   Mail,  
   MapPin, 
@@ -10,7 +11,16 @@ import { FaFacebook } from "react-icons/fa";
 import { FaXTwitter, FaInstagram, FaLinkedin } from "react-icons/fa6"; 
 
 export default function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // Hide footer on dashboard and admin pages
+  const isDashboard = pathname?.startsWith("/dashboard");
+  const isAdmin = pathname?.startsWith("/admin");
+
+  if (isDashboard || isAdmin) {
+    return null;
+  }
 
   return (
     <footer className="bg-white border-t border-soft-gray pt-16 pb-8 mt-12">
