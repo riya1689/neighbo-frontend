@@ -184,9 +184,9 @@ export default function UpcomingEventsPage() {
                                   </div>
                                </div>
                                
-                               <button className="px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-primary-dark transition shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group/btn">
+                               {/* <button className="px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-primary-dark transition shadow-xl shadow-primary/20 flex items-center justify-center gap-3 group/btn">
                                   Add to Calendar <Calendar size={20} className="group-hover/btn:scale-110 transition-transform" />
-                               </button>
+                               </button> */}
                             </div>
                          </div>
                       </div>
