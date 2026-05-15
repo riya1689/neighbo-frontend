@@ -17,6 +17,7 @@ import Navbar from '@/components/layout/Navbar';
 import SidebarLeft from '@/components/layout/SidebarLeft';
 import SidebarRight from '@/components/layout/SidebarRight';
 import Link from 'next/link';
+import FollowButton from '@/components/common/FollowButton';
 
 interface UserProfile {
   id: string;
@@ -127,9 +128,16 @@ export default function ProfilePage() {
                   
                   {/* Action Buttons (Follow or Settings) */}
                   <div className="flex gap-2">
-                    <button className="px-6 py-2 bg-primary text-white rounded-xl font-bold text-sm shadow-sm hover:bg-primary-dark transition-all">
-                      Follow
-                    </button>
+                    <FollowButton 
+                      userId={profile.id} 
+                      targetUsername={profile.username}
+                      onFollowChange={(isFollowing) => {
+                        setProfile(prev => prev ? {
+                          ...prev,
+                          totalNeighbos: isFollowing ? prev.totalNeighbos + 1 : prev.totalNeighbos - 1
+                        } : null);
+                      }}
+                    />
                   </div>
                 </div>
 
