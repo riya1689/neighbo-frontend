@@ -3,7 +3,7 @@
 Welcome to the frontend of **Neighbo**, a community-driven platform designed to connect neighbors, share updates, and provide a space for local interactions.
 
 ## Project Overview
-The Neighbo Frontend is a high-performance web application built with **Next.js 16**, **React.js**, **TypeScript**, **Tailwind CSS**, **Framer Motion**, **Lucide React**, **React Icons**, **React Hot Toast**. It provides a sleek, interactive interface for users to connect with their neighbors, discover local events, and access premium community content. The UI is designed with a focus on usability, speed, and premium aesthetics.
+The Neighbo Frontend is a high-performance web application built with **Next.js 16**, **React.js**, **TypeScript**, **Tailwind CSS**. It provides a sleek, interactive interface for users to connect with their neighbors, discover local events, and access premium community content. The UI is designed with a focus on usability, speed, and premium aesthetics.
 
 ---
 
@@ -44,13 +44,13 @@ The system implements a Role-Based Access Control (RBAC) mechanism:
 - **Payment Gateway**: Seamless integration with **SSLCommerz** for subscriptions and content unlocking.
 - **Notifications**: System-wide notification service for follows, votes, and activities.
 - **Event Management**: Community event scheduling and approval workflow.
--**User Dashboard**: User's personalized activity center.
--**Admin Dashboard**: Full-featured management suite for platform administrators.
--**Responsive Dashboard**: A personalized home feed for neighborhood updates.
--**Event Discovery**: Calendar and list views for upcoming neighborhood events.
--**Explore Feature**: Discover new neighborhoods and trending posts and categories.
--**Onboarding Flow**: Structured registration process including neighborhood selection.
--**Dynamic Interactions**: Smooth animations and real-time feedback for upvotes, downvotes, comments, shares and follows.
+- **User Dashboard**: User's personalized activity center.
+- **Admin Dashboard**: Full-featured management suite for platform administrators.
+- **Responsive Dashboard**: A personalized home feed for neighborhood updates.
+- **Event Discovery**: Calendar and list views for upcoming neighborhood events.
+- **Explore Feature**: Discover new neighborhoods and trending posts and categories.
+- **Onboarding Flow**: Structured registration process including neighborhood selection.
+- **Dynamic Interactions**: Smooth animations and real-time feedback for upvotes, downvotes, comments, shares and follows.
 
 ---
 
@@ -82,29 +82,6 @@ The system implements a Role-Based Access Control (RBAC) mechanism:
 
 ---
 
-## Roles & Access
-- **PUBLIC USER**:
-    - Users who are not logged in.
-    - They can only view content.
-    - They cannot create posts, comments, votes, shares, use AI features, or subscribe to premium plans.
-
-- **REGISTERED USER**:
-    - Create and interact with posts (comments, votes, shares).
-    - Follow/Unfollow other neighbors.
-    - Subscribe to Premium Plans.
-    - Unlock premium content.
-    - Access AI Assistant.
-- **ADMIN**:
-    - All USER permissions.
-    - Access to Admin Dashboard.
-    - Manage categories and neighborhoods.
-    - Moderate events and system updates.
-    - View platform-wide revenue and analytics.
-
----
-
----
-
 ## Error Handling & UI Feedback
 - **Toast Notifications**: Real-time feedback for successful actions or errors using `react-hot-toast`.
 - **Form Validation**: Client-side checks to ensure clean data submission.
@@ -113,12 +90,9 @@ The system implements a Role-Based Access Control (RBAC) mechanism:
 ---
 
 ## Design System
-The project follows a **Premium Aesthetic** guide:
-- **Typography**: Modern, readable fonts.
-- **Color Palette**: Harmonious and professional community-focused colors.
+The project follows a **3-columns layout** for desktop and **1-column** layout for mobile.
 - **Interactions**: Subtle micro-animations using Framer Motion to enhance UX.
 - **Responsiveness**: Mobile-first design ensuring a perfect experience on all devices.
-
 ---
 
 ## Getting Started
